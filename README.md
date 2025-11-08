@@ -1,4 +1,4 @@
-# proj_Lookvike
+# proj_Lkvk
 ** Hecho a las carreras, organizado por el compa GPT
 ```mermaid
 classDiagram
