@@ -28,9 +28,11 @@ Con las herramientas aprendidas en el curso POO, identificamos que es posible cr
 
 ## Funcionamiento
 ### Clase Principal: Moto
+Representa cada motocicleta con sus características técnicas y capacidades de evaluación, con herencias de los tipos de motos que hay en el mercado con sus caracteristicas especiales, además de estar complementada por clases que manejan la búsqueda, comparación, y lógica de Score, todo esto se guarda en la base de datos.
 ```mermaid
 classDiagram
- class Moto {
+    %% ===== CLASE PRINCIPAL =====
+    class Moto {
         - marca : string
         - modelo : string
         - cilindraje : int
@@ -51,59 +53,113 @@ classDiagram
         + mostrarFicha() void
     }
 
- class MotoNaked {
-        + estiloDeConduccion() string
+   
+    class MotoNaked {
+        
     }
 
     class MotoDeportiva {
-        + modoDeConduccion() string
+        
     }
 
-
     class MotoTouring {
-        + capacidadDeCarga() float
+        
     }
 
     class MotoScooter {
-        + tipoDeTransmision() string
+        
     }
 
-Moto <|-- MotoNaked
+    
+    class Buscador {
+       
+    }
+
+    class Comparador {
+        
+    }
+
+    class KroonoScore {
+       
+    }
+
+    class DB {
+        
+    }
+
+ 
+    Moto <|-- MotoNaked
     Moto <|-- MotoDeportiva
     Moto <|-- MotoTouring
     Moto <|-- MotoScooter
+
+     DB --> Moto : gestiona
+    Buscador --> DB : usa
+    Comparador --> DB : usa
+    KroonoScore --> Moto : evalúa
 ```
 ### Base de Datos
+Gestiona toda la persistencia de datos del sistema mediante archivos CSV. Actúa como el intermediario entre la aplicación y el almacenamiento permanente.
 ```mermaid
 classDiagram
-class DB {
+    class DB {
         - archivo_motos: string
         - archivo_marcas: string
         + cargar_motos() List~Moto~
         + guardar_moto(moto: Moto) void
         + buscar_por_marca(marca: string) List~Moto~
         + actualizar_precio(modelo: string, nuevo_precio: float) void
-}
+    }
+    
+    class Moto {
+        
+    }
+    
+    class Buscador {
+       
+    }
+    
+    class Comparador {
+        
+    }
+    
+    %% RELACIONES
+    DB --> Moto : gestiona
+    Buscador --> DB : consulta
+    Comparador --> DB : consulta
 ```
 ### Análisis de Motos
+Realiza búsquedas inteligentes sobre el catálogo de motocicletas, a partir de los filtros que seleccione el usuario.
 ```mermaid
 classDiagram
-   class Buscador {
-    - criteriosAvanzados : Map~string, any~
-    - resultados : List~Moto~
-    - ordenActual : string
-    + buscarModelo(nombre : string) List~Moto~
-    + filtrarPorTipo(tipo : string) List~Moto~
-    + filtrarPorPrecio(min : float, max : float) List~Moto~
-    + ordenarPor(criterio : string) void
-    + mostrarResultados() void
-    + limpiarBusqueda() void
-}
+    class Buscador {
+        - criteriosAvanzados : Map~string, any~
+        - resultados : List~Moto~
+        - ordenActual : string
+        + buscarModelo(nombre : string) List~Moto~
+        + filtrarPorTipo(tipo : string) List~Moto~
+        + filtrarPorPrecio(min : float, max : float) List~Moto~
+        + ordenarPor(criterio : string) void
+        + mostrarResultados() void
+        + limpiarBusqueda() void
+    }
+
+    class DB {
+        %% Gestor de base de datos
+    }
+
+    class Moto {
+        %% Entidad principal
+    }
+
+    Buscador --> DB : consulta
+    Buscador --> Moto : procesa
 ```
-### KronoScore
+### KroonoScore
+Calcula puntuaciones objetivas y estandarizadas para cada motocicleta, basadas en los componentes y el precio, dimensionando 5 apartados y dando una nota final de 1 al 10.
 ```mermaid
 classDiagram
-class KroonoScore {
+    class KroonoScore {
         - rendimiento : float
         - consumoYAutonomia : float
         - viajesYComodidad : float
@@ -111,21 +167,46 @@ class KroonoScore {
         - confiabilidad : float
         + calcularScore() float
     }
+
+    class Moto {
+        %% Entidad principal
+    }
+
+    class Comparador {
+        %% Sistema de comparación
+    }
+
+    KroonoScore --> Moto : evalúa
+    Comparador --> KroonoScore : utiliza
 ```
 
 ## Comparativa
+Permite contrastar múltiples motocicletas simultáneamente, mostrando diferencias técnicas y generando visualizaciones para facilitar la decisión final del usuario.
 ```mermaid
 classDiagram
     class Comparador {
-    - listaMotos : List~Moto~
-    - motosSeleccionadas : List~Moto~
-    - resultadoComparacion : Map~string, Moto~
-    + agregarMoto(moto : Moto) void
-    + mostrarComparacion() void
-    + graficaComparacion(formato : ) void
-    + limpiarComparador() void
-}
+        - listaMotos : List~Moto~
+        - motosSeleccionadas : List~Moto~
+        - resultadoComparacion : Map~string, Moto~
+        + agregarMoto(moto : Moto) void
+        + mostrarComparacion() void
+        + graficaComparacion(formato : ) void
+        + limpiarComparador() void
+    }
+
+    class Moto {
+        %% Entidad principal
+    }
+
+    class KroonoScore {
+        %% Sistema de scoring
+    }
+
+    Comparador --> Moto : compara
+    Comparador --> KroonoScore : integra
 ```
+### General
+Aqui se muestra el funcionamiento de las clases antes descritas:
 ```mermaid
 classDiagram
     %% ===== Clases principales =====
