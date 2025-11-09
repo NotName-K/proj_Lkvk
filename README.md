@@ -27,7 +27,9 @@ Este proyecto surge para solucionar un problema que algunos vivimos: buscar moto
 Con las herramientas aprendidas en el curso POO, identificamos que es posible crear algo cercano a dicha herramienta, ya que se pueden adaptar muchos conceptos del motociclismo a las bases del POO: Clases y Objetos.
 
 ## Funcionamiento
+### Clase Principal: Moto
 ```mermaid
+classDiagram
  class Moto {
         - marca : string
         - modelo : string
@@ -48,8 +50,81 @@ Con las herramientas aprendidas en el curso POO, identificamos que es posible cr
         + calcularScore() float
         + mostrarFicha() void
     }
+
+ class MotoNaked {
+        + estiloDeConduccion() string
+    }
+
+    class MotoDeportiva {
+        + modoDeConduccion() string
+    }
+
+
+    class MotoTouring {
+        + capacidadDeCarga() float
+    }
+
+    class MotoScooter {
+        + tipoDeTransmision() string
+    }
+
+Moto <|-- MotoNaked
+    Moto <|-- MotoDeportiva
+    Moto <|-- MotoTouring
+    Moto <|-- MotoScooter
+```
+### Base de Datos
+```mermaid
+classDiagram
+class DB {
+        - archivo_motos: string
+        - archivo_marcas: string
+        + cargar_motos() List~Moto~
+        + guardar_moto(moto: Moto) void
+        + buscar_por_marca(marca: string) List~Moto~
+        + actualizar_precio(modelo: string, nuevo_precio: float) void
+}
+```
+### Análisis de Motos
+```mermaid
+classDiagram
+   class Buscador {
+    - criteriosAvanzados : Map~string, any~
+    - resultados : List~Moto~
+    - ordenActual : string
+    + buscarModelo(nombre : string) List~Moto~
+    + filtrarPorTipo(tipo : string) List~Moto~
+    + filtrarPorPrecio(min : float, max : float) List~Moto~
+    + ordenarPor(criterio : string) void
+    + mostrarResultados() void
+    + limpiarBusqueda() void
+}
+```
+### KronoScore
+```mermaid
+classDiagram
+class KroonoScore {
+        - rendimiento : float
+        - consumoYAutonomia : float
+        - viajesYComodidad : float
+        - disenoYMateriales : float
+        - confiabilidad : float
+        + calcularScore() float
+    }
 ```
 
+## Comparativa
+```mermaid
+    class Comparador {
+    - listaMotos : List~Moto~
+    - motosSeleccionadas : List~Moto~
+    - resultadoComparacion : Map~string, Moto~
+    + agregarMoto(moto : Moto) void
+    + mostrarComparacion() void
+    + graficaComparacion(formato : ) void
+    + limpiarComparador() void
+}
+```
 ```mermaid
 classDiagram
     %% ===== Clases principales =====
@@ -139,9 +214,21 @@ classDiagram
         + mostrarInforme() void
     }
 
+ class DB {
+        - archivo_motos: string
+        - archivo_marcas: string
+        + cargar_motos() List~Moto~
+        + guardar_moto(moto: Moto) void
+        + buscar_por_marca(marca: string) List~Moto~
+        + actualizar_precio(modelo: string, nuevo_precio: float) void
+}
+DB  --> "many" Moto : gestiona
+    Buscador --> DB : usa
+    Comparador --> DB : usa
+    Marca "1" --> "many" Moto : contiene
     
     
-    %% ===== Subclases de Moto =====
+
     class MotoNaked {
         + estiloDeConduccion() string
     }
