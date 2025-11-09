@@ -1,5 +1,8 @@
 # proj_LVK
-Comparador y Análisis de Motocicletas en Python.
+## Logo del grupo
+![Logo](https://github.com/NotName-K/POO-R2/blob/main/Screenshot%202025-09-23%20110719.png?raw=true)
+
+## Comparador y Análisis de Motocicletas en Python.
 [Logo]
 
 Look_Vike es una proyecto especializado en análisis y evaluación comparativa de motocicletas, diseñada para ayudar a compradores a tomar decisiones informadas basadas en datos técnicos y criterios objetivos.
