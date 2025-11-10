@@ -446,7 +446,7 @@ A pesar de que el pilar del proyecto es facilitar la elección de motocicletas p
 A la hora de presentar resultados siempre se busca que sean lo más "digeribles" posible para el usuario, así, entregarle un conjunto de datos numéricos o booleanos realmente no ayudaría a la gruesa parte de la población sin tantos conocimientos técnicos sobre el tema, por tanto el equipo considera que lo ideal sería poder representar las características de las motocicletas en una especie de "Diagramas de Estrella" que puedan mostrar que tanto se especializa o es buena una determinada moto en un ambito, por ejemplo ahorro de gasolina.
 
 Un ejemplo de cómo se vería este tipo de gráfico:
-[![IMG-20251110-WA0009.webp](https://i.postimg.cc/nzd8VxzG/IMG-20251110-WA0009.webp)](https://postimg.cc/ZBysj16W)
+[![image.png](https://i.postimg.cc/d3NK6yTG/image.png)](https://postimg.cc/30G6JW1w)
 
 ## Web Scraping
 
