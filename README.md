@@ -356,27 +356,22 @@ DB  --> "many" Moto : gestiona
 ```
 look_vike/
 │
-├── __init__.py                 # Paquete principal
-├── main.py                     # Punto de entrada
+├── __init__.py             
+├── main.py                     
 │
-├── core/                       # Núcleo del sistema
+├── core/                      
 │   ├── __init__.py
-│   └── moto.py                 # Moto + todas las subclases
+│   └── moto.py                
 │
-├── data/                       # Datos y persistencia  
+├── data/                       
 │   ├── __init__.py
-│   ├── database.py             # GestorDB
-│   ├── motos.csv               # Base de datos principal
-│   └── marcas.csv              # Datos de marcas
+│   ├── database.py             
+│   ├── motos.csv               
+│   └── marcas.csv              
 │
-├── services/                   # Lógica de servicios
-│   ├── __init__.py
-│   ├── buscador.py
-│   ├── comparador.py
-│   └── scoring.py              # KronoScore
-|
-└── interface/                  # Interfaz de usuario
+└── services/                   
     ├── __init__.py
-    ├── menus.py
-    └── display.py
+    ├── buscador.py
+    ├── comparador.py
+    └── scoring.py              
 ```
