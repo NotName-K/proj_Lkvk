@@ -447,3 +447,179 @@ A la hora de presentar resultados siempre se busca que sean lo más "digeribles"
 
 Un ejemplo de cómo se vería este tipo de gráfico:
 [![IMG-20251110-WA0009.webp](https://i.postimg.cc/nzd8VxzG/IMG-20251110-WA0009.webp)](https://postimg.cc/ZBysj16W)
+
+## Web Scraping
+
+Para la creación de la base de datos que se requiere para el proyecto, se realiza un codigo que realice web scrapping a paginas que vendan motos. Se utliza principalmente las bibliotecas de Selenium y el modulo BeautifulSoup de la libreria bs4.
+
+El codigo primero tiene una configuración para que el codigo pueda acceder a la pagina, luego hay un condicional que busca y guarda en una lista, los links de las marcas de motos que se encuentran es la pagina. Despues se tiene principalmente dos funciones, la primera obtiene los links de todas las motos que aparecen en la pagina y los guarda en una lista y la segunda función obtiene la información requerida de la moto.
+
+A continuación, con un for se van accediendo a cada uno de los links de las motos y se van guardando los datos en una lista. Para finalizar con la libreria Pandas se convierte esta lista en un archivo .cvs.
+
+```python
+#instalar selenium, pandas,beautifulsoup4, y obtener algo de chrome https://sites.google.com/chromium.org/driver
+from selenium.webdriver.chrome.service import Service
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+from bs4 import BeautifulSoup
+import time
+import random
+import pandas as pd
+import re #para obtener solo los numeros de un str
+
+
+options = Options()
+options.add_argument("--start-maximized")
+
+driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=options)
+driver.get("https://www.galgo.com/co/motos")
+wait = WebDriverWait(driver, 10)
+
+carousel = wait.until(
+    EC.presence_of_element_located((By.CSS_SELECTOR, "div.ui-core-carousel-renderer div.slick-list"))
+)
+
+anchors = carousel.find_elements(By.CSS_SELECTOR, "div.slick-slide a")
+
+#encuentra los links de las marcas de las motos
+lista_links = []
+for a in anchors:
+    href = a.get_attribute("href")
+    try:
+        img = a.find_element(By.CSS_SELECTOR, "img.ui-core-picture__image")
+        alt = img.get_attribute("alt")
+    except:
+        alt = "desconocido"
+    if href:
+        lista_links.append(href)
+
+lista_links_final = list(set(lista_links))
+
+
+#función que encuentra los links de las motos
+def links_motos(url):
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    service = Service("chromedriver.exe")
+
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.get(url)
+    time.sleep(6)
+
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+
+    enlaces = soup.select("a.ui-core-action.ui-core-action--link[href]")
+
+    links_motos = [a["href"] for a in enlaces if a["href"].startswith("/co/motos/CO")]
+    links_motos_final = ["https://www.galgo.com" + link for link in dict.fromkeys(links_motos)]
+
+    driver.quit()
+    return links_motos_final
+
+def limpiar_numeros(texto): #filtra los digitos de un str
+    return ''.join(re.findall(r'[\d.,]+', texto))
+
+#función que obtiene toda la información relevante de las motos
+def scraping_inf_motos(url):
+    options = Options()
+    options.add_argument("--headless")
+    options.add_argument("--disable-gpu")
+    service = Service("chromedriver.exe")
+
+    driver = webdriver.Chrome(service=service, options=options)
+    driver.get(url)
+    WebDriverWait(driver, 15).until(
+        EC.presence_of_element_located((By.CSS_SELECTOR, "h1.ui-core-typography--xxlarge"))
+    )
+
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+
+    nombre_tag = soup.find("span", class_="ui-core-breadcrumb__item")
+    nombre = nombre_tag.get_text(strip=True) if nombre_tag else "Modelo no encontrado"
+
+    marca_tag = soup.find("ol", class_="ui-core-breadcrumb")
+    marca_list = (
+        [a.get_text(strip=True) for a in marca_tag.find_all("a")]
+        if marca_tag else ["Breadcrumb no encontrado"]
+    )
+    marca = marca_list[2]
+
+    frenos_del_tag = soup.select_one("div.ui-core-typography--small")
+    frenos_delanteros = frenos_del_tag.get_text(strip=True) if frenos_del_tag else "Frenos delanteros no encontrados"
+
+    frenos_tras_list = soup.select("div.ui-core-typography.ui-core-typography--small")
+    frenos_traseros = frenos_tras_list[-1].get_text(strip=True) if frenos_tras_list else "Frenos traseros no encontrados"
+
+    peso_tag = soup.select_one(
+        "div.ui-core-typography.ui-core-composed-text__typography.ui-core-typography--small"
+    )
+    peso = peso_tag.get_text(strip=True) if peso_tag else "Peso no encontrado"
+
+    transmision_tag = soup.select_one(
+        "div.ui-core-typography.ui-core-composed-text__typography.ui-core-typography--small"
+    )
+    transmision = transmision_tag.get_text(strip=True) if transmision_tag else "Transmisión no encontrada"
+
+    torque_tag = soup.select_one("div.ui-core-typography.ui-core-typography--small.ui-core-typography--neutral-900")
+    torque = torque_tag.get_text(strip=True) if torque_tag else "Torque no encontrado"
+
+    potencia_tag = soup.select_one("div.ui-core-typography.ui-core-typography--small.ui-core-typography--neutral-900")
+    potencia = potencia_tag.get_text(strip=True) if potencia_tag else "Potencia no encontrada"
+
+    capacidad_tanque_tag = soup.select_one(
+        "div.ui-core-typography.ui-core-typography--small.ui-core-typography--neutral-900"
+    )
+    capacidad_tanque = capacidad_tanque_tag.get_text(strip=True) if capacidad_tanque_tag else "Capacidad no encontrada"
+
+    garantia_tag = soup.find("div",
+                             class_="ui-core-typography ui-core-composed-text__typography ui-core-typography--center ui-core-typography--small ui-core-typography--normal ui-core-typography--neutral-900")
+    garantia = garantia_tag.get_text(strip=True) if garantia_tag else "Garantía no encontrada"
+
+    precio_tag = soup.select_one(
+        "div.ui-core-typography.ui-core-columns__typography.ui-core-typography--right.ui-core-typography--xlarge"
+    )
+    precio = precio_tag.get_text(strip=True) if precio_tag else "Precio no encontrado"
+    precio = limpiar_numeros(precio)
+
+    driver.quit()
+
+    return {
+        "nombre": nombre,
+        "marca": marca,
+        "peso": peso,
+        "transmision": transmision,
+        "torque": torque,
+        "potencia": potencia,
+        "tipos de frenos delanteros": frenos_delanteros,
+        "tipos de frenos traseros": frenos_traseros,
+        "capacidad del tanque": capacidad_tanque,
+        "garantia": garantia,
+        "precio": precio
+    }
+
+
+#lol = scraping_inf_motos("https://www.galgo.com/co/motos/CO731-tvs-raider-125?sku=109702006")
+
+#print(lol)
+
+datos = []
+
+for i in lista_links_final:
+    print(i)
+    links = links_motos(i)
+    for j in links:
+        info_motos = scraping_inf_motos(j)
+        datos.append(info_motos)
+        time.sleep(random.uniform(2, 5))
+
+print(datos)
+#df = pd.DataFrame(datos)
+#df.to_csv("motos.csv", index=False, encoding="utf-8-sig")
+
+driver.quit()
+```
