@@ -134,7 +134,7 @@ classDiagram
     ReviewModule --> Moto : evalúa
 ```
 ### Base de Datos
-Gestiona toda la persistencia de datos del sistema mediante archivos CSV. Actúa como el intermediario entre la aplicación y el almacenamiento permanente.
+Gestiona toda la persistencia de datos del sistema mediante archivos CSV. Actúa como el intermediario entre la aplicación y el almacenamiento permanente, se prefirió esta opción antes que la del WebScrapping para mayor facilidad y actualización de datos por el usuario.
 ```mermaid
 classDiagram
     class DB {
