@@ -5,13 +5,13 @@ from pathlib import Path
 class DBScores:
 
     def __init__(self):
-        # BD debe estar en /data/, igual que moto.db
+        
         base_path = Path(__file__).parent.parent / "data" / "data"
         base_path.mkdir(parents=True, exist_ok=True)
 
         self.db_file = base_path / "scores.db"
-        print("➡️ Usando base de datos de scores en:", self.db_file)
-    # ============ MÉTODOS DE SCORES (sin cambios) ============
+        
+    
     
     def get_score(self, apartado, valor):
         if not valor:
@@ -53,7 +53,7 @@ class DBScores:
         conn.close()
         return row[0] if row else 0
 
-    # ============ MÉTODOS DE VALIDACIÓN ============
+    
     
     def get_valores_validos(self, campo):
         """Obtiene todos los valores válidos para un campo"""
@@ -92,23 +92,23 @@ class DBScores:
         Retorna (es_valido: bool, mensaje: str)
         """
         if not valor or valor.strip() == "":
-            return True, ""  # Valores vacíos son opcionales
+            return True, ""  
         
         valor_lower = valor.lower().strip()
         valores_validos = self.get_valores_validos(campo)
         
         if not valores_validos:
-            return True, ""  # Si no hay validación, se acepta
+            return True, ""  
         
-        # Buscar coincidencia exacta o parcial
+        
         for val_db, ejemplo in valores_validos:
             if valor_lower == val_db.lower() or valor_lower in val_db.lower():
                 return True, ""
         
-        # Si no es válido, mostrar opciones
+        
         opciones = [v[0] for v in valores_validos]
         mensaje = f"❌ '{valor}' no es válido.\n📋 Opciones: {', '.join(opciones)}"
-        if valores_validos[0][1]:  # Si hay ejemplos
+        if valores_validos[0][1]:  
             mensaje += f"\n💡 Ejemplo: {valores_validos[0][1]}"
         
         return False, mensaje
@@ -119,11 +119,11 @@ class DBScores:
         Retorna (es_valido: bool, mensaje: str)
         """
         if valor is None:
-            return True, ""  # Valores None son opcionales
+            return True, ""  
         
         rango = self.get_rango_valido(campo)
         if not rango:
-            return True, ""  # Sin validación definida
+            return True, ""  
         
         try:
             num = float(valor)
@@ -131,9 +131,9 @@ class DBScores:
                 return True, ""
             else:
                 mensaje = (
-                    f"❌ {num} {rango['unidad']} está fuera de rango.\n"
-                    f"📊 Rango válido: {rango['min']}-{rango['max']} {rango['unidad']}\n"
-                    f"💡 Ejemplos: {rango['ejemplo']}"
+                    f" {num} {rango['unidad']} está fuera de rango.\n"
+                    f" Rango válido: {rango['min']}-{rango['max']} {rango['unidad']}\n"
+                    f" Ejemplos: {rango['ejemplo']}"
                 )
                 return False, mensaje
         except ValueError:
@@ -150,18 +150,18 @@ class DBScores:
         valor_lower = valor.lower().strip()
         valores_validos = self.get_valores_validos(campo)
         
-        # Buscar coincidencia y retornar el valor normalizado
+        
         for val_db, _ in valores_validos:
             if valor_lower == val_db.lower() or valor_lower in val_db.lower():
                 return val_db
         
-        return valor  # Si no hay match, retornar original
+        return valor  
     
     def mostrar_opciones(self, campo):
         """Muestra las opciones disponibles para un campo"""
         valores = self.get_valores_validos(campo)
         if valores:
-            print(f"\n📋 Opciones válidas para '{campo}':")
+            print(f"\n Opciones válidas para '{campo}':")
             for i, (valor, ejemplo) in enumerate(valores, 1):
                 if ejemplo:
                     print(f"  {i}. {valor} - {ejemplo}")
@@ -170,12 +170,12 @@ class DBScores:
         else:
             rango = self.get_rango_valido(campo)
             if rango:
-                print(f"\n📊 Rango válido para '{campo}':")
+                print(f"\n Rango válido para '{campo}':")
                 print(f"  Min: {rango['min']} {rango['unidad']}")
                 print(f"  Max: {rango['max']} {rango['unidad']}")
-                print(f"  💡 Ejemplos: {rango['ejemplo']}")
+                print(f"   Ejemplos: {rango['ejemplo']}")
 
-    # ============ MÉTODOS DE EXTRACCIÓN (sin cambios) ============
+    
 
     def extraer_hp(self, potencia_str):
         if not potencia_str:

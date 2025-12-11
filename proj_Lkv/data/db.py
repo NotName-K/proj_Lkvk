@@ -84,6 +84,16 @@ CREATE TABLE IF NOT EXISTS moto (
     capacidad_carga REAL
 );
     """)
+    conn.execute("""
+CREATE TABLE IF NOT EXISTS promedios_mercado (
+    tipo TEXT PRIMARY KEY,
+    precio_promedio REAL,
+    krono_calidad_promedio REAL,
+    krono_precio_promedio REAL,
+    cantidad_motos INTEGER,
+    ultima_actualizacion DATE
+);
+    """)
     conn.commit()
     conn.close()
 
@@ -92,11 +102,11 @@ class DB:
     def __init__(self):
         self.conn = sqlite3.connect(DB_PATH)
         self.conn.row_factory = sqlite3.Row
-        self.cursor = self.conn.cursor()  # FIX: Crea cursor persistente aquí
+        self.cursor = self.conn.cursor()  
         self.validator = DBScores()
 
     def cerrar(self):
-        self.conn.commit()  # FIX: Commit pendiente antes de cerrar
+        self.conn.commit()  
         self.conn.close()
 
     def get_moto(self, moto_id):
@@ -131,7 +141,7 @@ class DB:
     def agregar_moto_db(self, moto):
         columnas = ', '.join(moto.keys())
         placeholders = ':' + ', :'.join(moto.keys())
-        sql = f"INSERT OR REPLACE INTO moto ({columnas}) VALUES ({placeholders})"  # FIX: OR REPLACE para updates si ID existe
+        sql = f"INSERT OR REPLACE INTO moto ({columnas}) VALUES ({placeholders})"  
         self.cursor.execute(sql, moto)
         self.conn.commit()
         return moto['id']
@@ -140,7 +150,7 @@ class DB:
         self.cursor.execute("DELETE FROM moto WHERE id = ?", (moto_id,))
         self.conn.commit()
 
-    # ============ MÉTODOS DE INPUT CON VALIDACIÓN ============
+    
 
     def pedir_texto_validado(self, msg, campo, obligatorio=False):
         """Pide texto y valida contra valores_validos"""
@@ -151,7 +161,7 @@ class DB:
                 return None
             
             if not valor and obligatorio:
-                print("⚠️  Este campo es obligatorio")
+                print("  Este campo es obligatorio")
                 continue
             
             es_valido, mensaje = self.validator.validar_valor(campo, valor)
@@ -172,7 +182,7 @@ class DB:
                     return None
                 
                 if not valor_str and obligatorio:
-                    print("⚠️  Este campo es obligatorio")
+                    print("  Este campo es obligatorio")
                     continue
                 
                 valor = float(valor_str)
@@ -184,10 +194,10 @@ class DB:
                     print(mensaje)
                     
             except ValueError:
-                print("❌ Número inválido. Intenta de nuevo.")
+                print("Número inválido. Intenta de nuevo.")
                 rango = self.validator.get_rango_valido(campo)
                 if rango:
-                    print(f"💡 Ejemplos: {rango['ejemplo']}")
+                    print(f" Ejemplos: {rango['ejemplo']}")
 
     def pedir_int_validado(self, msg, campo, obligatorio=False):
         """Pide int y valida contra rangos_validos"""
@@ -199,7 +209,7 @@ class DB:
                     return None
                 
                 if not valor_str and obligatorio:
-                    print("⚠️  Este campo es obligatorio")
+                    print("  Este campo es obligatorio")
                     continue
                 
                 valor = int(valor_str)
@@ -211,7 +221,7 @@ class DB:
                     print(mensaje)
                     
             except ValueError:
-                print("❌ Número inválido. Intenta de nuevo.")
+                print(" Número inválido. Intenta de nuevo.")
                 rango = self.validator.get_rango_valido(campo)
                 if rango:
                     print(f"💡 Ejemplos: {rango['ejemplo']}")
@@ -229,7 +239,7 @@ class DB:
                     return None
                 return float(valor)
             except ValueError:
-                print("❌ Número inválido")
+                print(" Número inválido")
 
     def pedir_int(self, msg):
         """Input de int sin validación"""
@@ -240,7 +250,7 @@ class DB:
                     return None
                 return int(valor)
             except ValueError:
-                print("❌ Número inválido")
+                print(" Número inválido")
                 
     def pedir_potencia(self):
         
@@ -250,19 +260,19 @@ class DB:
 
             match = re.match(r"^(\d+(\.\d+)?)\s*(hp|cv)\s*,\s*(\d+)$", txt)
             if not match:
-                print("❌ Formato inválido. Ejemplo correcto: 15 hp, 8000")
+                print(" Formato inválido. Ejemplo correcto: 15 hp, 8000")
                 continue
 
-            valor = float(match.group(1))    # potencia (hp/cv)
-            rpm = int(match.group(4))        # rpm
+            valor = float(match.group(1))    
+            rpm = int(match.group(4))        
 
-        # Límites
+        
             if not (1 <= valor <= 300):
-                print("❌ Potencia fuera de rango (1–300 hp)")
+                print(" Potencia fuera de rango (1–300 hp)")
                 continue
 
             if not (1000 <= rpm <= 20000):
-                print("❌ RPM fuera de rango (1000–20000)")
+                print(" RPM fuera de rango (1000–20000)")
                 continue
 
             return txt
@@ -275,24 +285,24 @@ class DB:
 
             match = re.match(r"^(\d+(\.\d+)?)\s*nm\s*,\s*(\d+)$", txt)
             if not match:
-                print("❌ Formato inválido. Ejemplo correcto: 14 nm, 6500")
+                print(" Formato inválido. Ejemplo correcto: 14 nm, 6500")
                 continue
 
-            valor = float(match.group(1))    # torque en nm
-            rpm = int(match.group(3))        # rpm
-        # Límites
+            valor = float(match.group(1))    
+            rpm = int(match.group(3))        
+        
             if not (1 <= valor <= 300):
-                print("❌ Torque fuera de rango (1–300 Nm)")
+                print(" Torque fuera de rango (1–300 Nm)")
                 continue
 
             if not (1000 <= rpm <= 20000):
-                print("❌ RPM fuera de rango (1000–20000)")
+                print(" RPM fuera de rango (1000–20000)")
                 continue
 
             return txt
 
 
-    # ============ MÉTODOS POR TIPO DE MOTO ============
+    
 
     def pd_naked(self):
         return {
@@ -354,12 +364,12 @@ class DB:
 
     def agregar_moto(self):
         print("\n" + "="*60)
-        print("🏍️  AGREGAR NUEVA MOTO")
+        print("  AGREGAR NUEVA MOTO")
         print("="*60)
         
-        # Mostrar tipos disponibles
-                # Mostrar tipos disponibles
-        print("\n📋 TIPOS DE MOTO DISPONIBLES:")
+        
+                
+        print("\nTIPOS DE MOTO DISPONIBLES:")
         self.validator.mostrar_opciones("tipo")
         
         tipos = {
@@ -375,15 +385,15 @@ class DB:
      }
 
 
-        # 🔄 BUCLE PARA OBLIGAR A ELEGIR UN VALOR CORRECTO
+        
         while True:
             tn = input("\nSelecciona tipo (1-9): ").strip()
             tps = tipos.get(tn)
 
             if tps:
-                break   # ✔️ Tipo válido → salimos del bucle
+                break   
             else:
-                print("❌ Tipo inválido. Debes seleccionar un número entre 1 y 9.")
+                print("Tipo inválido. Debes seleccionar un número entre 1 y 9.")
 
         print(f"\n✅ Tipo seleccionado: {tps.upper()}")
 
@@ -596,12 +606,12 @@ class DB:
         self.agregar_moto_db(moto)
         
         print("\n" + "="*60)
-        print(f"✅ Moto '{marca} {modelo}' agregada exitosamente!")
-        print(f"🆔 ID: {moto['id']}")
+        print(f"Moto '{marca} {modelo}' agregada exitosamente!")
+        print(f"ID: {moto['id']}")
         print("="*60 + "\n")
         
         return moto['id']
-    
+   
     def obtener_modelos_por_marca(self, marca):
         self.cursor.execute("""
             SELECT id, marca, modelo, tipo, año

@@ -3,10 +3,10 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from data.db import DB, init_db
 from data.db_scores import DBScores
-from Services.k_score import KronoScore, clasificar_krono
-from Services.review import ReviewModule
-from Services.admin import admin_mode
-from Services.review import ReviewModule
+from Core.kroono_score import KronoScore, clasificar_krono
+from Services.kroono_view import ReviewModule
+from Services.admin_kroonos import admin_mode
+from Services.kroono_view import ReviewModule
 
 def limpiar():
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -40,10 +40,10 @@ def main():
         if op == "1":
             ReviewModule(db, db_scores, krono).ejecutar()
         elif op == "2":
-            from Services.comparador import Comparador
+            from Services.kroono_vs import Comparador
             Comparador(db, krono).ejecutar()
         elif op == "3":
-            from Services.buscador import KronoFind
+            from Services.kroono_find import KronoFind
             KronoFind(db, krono).ejecutar()
         elif op == "4":
             admin_mode()

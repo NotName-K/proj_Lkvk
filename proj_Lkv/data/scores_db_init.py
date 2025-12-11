@@ -3,13 +3,13 @@
 import sqlite3
 from pathlib import Path
 
-DB_PATH = Path(__file__).parent / "data" / "data" / "scores.db"
+DB_PATH = Path(__file__).parent / "data" / "scores.db"
 
 def init_scores_db():
     conn = sqlite3.connect(DB_PATH)
     cur = conn.cursor()
     
-    # Tabla de scores (sin cambios)
+    
     cur.execute("""
     CREATE TABLE IF NOT EXISTS scores (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -36,7 +36,7 @@ def init_scores_db():
     )
     """)
     
-    # Tabla expandida de valores válidos
+    
     cur.execute("""
     CREATE TABLE IF NOT EXISTS valores_validos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -48,7 +48,7 @@ def init_scores_db():
     )
     """)
     
-    # Tabla de rangos numéricos válidos
+    
     cur.execute("""
     CREATE TABLE IF NOT EXISTS rangos_validos (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -60,7 +60,7 @@ def init_scores_db():
     )
     """)
     
-    # ============ INSERTAR SCORES (sin cambios) ============
+    
     hp_scores = [
         ("0-15", 2), ("15-30", 6), ("30-50", 10),
         ("50-75", 14), ("75-100", 17), ("100-150", 19), ("150+", 20)
@@ -234,7 +234,7 @@ def init_scores_db():
         cur.execute("INSERT OR IGNORE INTO scores (apartado, valor, puntaje) VALUES (?, ?, ?)",
                    ("neumaticos", valor, puntaje))
     
-    # ============ MARCAS CONFIABILIDAD ============
+    
     marcas_confiabilidad = [
         ("yamaha", 58), ("akt", 38), ("bajaj", 42), ("suzuki", 56),
         ("honda", 60), ("tvs", 40), ("hero", 36), ("victory", 44),
@@ -246,7 +246,7 @@ def init_scores_db():
         cur.execute("INSERT OR IGNORE INTO marca_confiabilidad (marca, puntaje) VALUES (?, ?)",
                    (marca, puntaje))
     
-    # ============ FALLOS PENALIZACIONES ============
+    
     fallos_penalizaciones = [
         ("motor", -20), ("transmision", -18), ("cigüeñal", -20),
         ("pistones", -18), ("valvulas", -15), ("embrague", -12),
@@ -261,9 +261,9 @@ def init_scores_db():
         cur.execute("INSERT OR IGNORE INTO fallos_scores (palabra, penalizacion) VALUES (?, ?)",
                    (palabra, penalizacion))
     
-    # ============ VALORES VÁLIDOS EXPANDIDOS ============
     
-    # Tipos de moto
+    
+    
     tipos = [
         ("naked", None, "Yamaha MT-07, Honda CB650R"),
         ("sport", None, "Yamaha R3, Kawasaki Ninja 400"),
@@ -279,7 +279,7 @@ def init_scores_db():
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("tipo", valor, cat, ejemplo))
     
-    # Marcas
+    
     marcas = ["yamaha", "akt", "bajaj", "suzuki", "honda", "tvs", "hero", 
               "victory", "kymco", "ktm", "kawasaki", "royal enfield", "cfmoto", 
               "bmw", "voge", "benelli", "harley-davidson", "ducati", "triumph", "sym"]
@@ -287,7 +287,7 @@ def init_scores_db():
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("marca", marca, None, None))
     
-    # Tiempos de motor
+    
     for tiempo in ["2T", "4T"]:
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("tiempos", tiempo, None, "2T (2 tiempos) o 4T (4 tiempos)"))
@@ -319,42 +319,42 @@ def init_scores_db():
         )
 
     
-    # Refrigeración
+    
     for refrig in ["aire", "aire-aceite", "liquido"]:
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("refrigeracion", refrig, None, None))
     
-    # Arranque
+    
     for arr in ["electrico", "pedal", "ambos"]:
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("arranque", arr, None, None))
     
-    # Inyección
+    
     for iny in ["FI", "carburador"]:
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("inyeccion", iny, None, "FI (Fuel Injection)"))
     
-    # Transmisión
+    
     for trans in ["mecanica", "automatica"]:
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("transmision", trans, None, None))
     
-    # Faros
+    
     for faro in ["LED", "halogena"]:
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("faros", faro, None, None))
     
-    # ABS
+    
     for abs_val in ["mono", "doble", "sin"]:
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("abs_sistema", abs_val, None, "mono/doble/sin"))
     
-    # Frenos
+    
     for freno in ["disco", "disco doble", "tambor"]:
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("freno", freno, "frenos", None))
     
-    # Suspensión delantera
+    
     susp_d = [
         ("horquilla convencional", "Horquilla básica"),
         ("telescopica", "Horquilla telescópica estándar"),
@@ -364,7 +364,7 @@ def init_scores_db():
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("suspension_d", susp, None, ejemplo))
     
-    # Suspensión trasera
+    
     susp_t = [
         ("doble amortiguador", "Dos amortiguadores"),
         ("monoamortiguador", "Monoamortiguador estándar"),
@@ -374,7 +374,7 @@ def init_scores_db():
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("suspension_t", susp, None, ejemplo))
     
-    # Neumáticos
+    
     neumaticos = ["kaptor", "queen", "kontrol", "ceat", "cst", "chaoyang", 
                   "mrf", "irc", "kenda", "dunlop", "bridgestone", "metzeler", 
                   "continental", "michelin", "pirelli"]
@@ -382,7 +382,7 @@ def init_scores_db():
         cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                    ("neumaticos", neu, None, None))
     
-    # Respuestas Sí/No
+    
     for respuesta in ["si", "no"]:
         for campo in ["parabrisas_ajustable", "control_crucero", "sliper_clutch", 
                      "suspension_largo_recorrido", "proteccion_motor", "tanque_grande",
@@ -390,7 +390,7 @@ def init_scores_db():
             cur.execute("INSERT OR IGNORE INTO valores_validos (campo, valor, categoria, ejemplo) VALUES (?, ?, ?, ?)",
                        (campo, respuesta, "booleano", None))
     
-    # ============ RANGOS NUMÉRICOS VÁLIDOS ============
+    
     rangos = [
         ("cilindraje", 49, 2500, "cc", "125, 250, 650"),
         ("año", 1990, 2030, "año", "2020, 2023"),
@@ -420,10 +420,10 @@ def init_scores_db():
     
     conn.commit()
     conn.close()
-    print("✅ Base de datos de scores inicializada correctamente")
+    print(" Base de datos de scores inicializada correctamente")
 
 
 if __name__ == "__main__":
-    print("🚀 Inicializando base de datos de scores...")
+    print(" Inicializando base de datos de scores...")
     init_scores_db()
-    print("✨ Proceso completado. La base de datos está lista para usar.")
+    print("Proceso completado. La base de datos está lista para usar.")
