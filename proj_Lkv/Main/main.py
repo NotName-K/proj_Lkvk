@@ -54,10 +54,10 @@ def main():
         elif op == "4":
             admin_mode()
         elif op == "0":
-            print("\n¡Chao!")
+            print("\nHasta Luego")
             break
         else:
-            print("\nAún no está listo")
+            print("\nOpción inválida")
             pausar()
 
     db.cerrar()

@@ -150,11 +150,11 @@ class ReviewModule:
             print(
                 f" Precio:         ${moto.info.precio:,.0f}"
                 if moto.info.precio
-                else "💰 Precio:         N/A"
+                else " Precio:         N/A"
             )
             vs = self.krono.vs_mercado(moto, scores)
             if vs:
-                print(vs)
+                print(f" {vs}")
             print(f" Colores:        {moto.info.color or 'N/A'}")
 
             print("\n" + "-" * 70)
@@ -178,10 +178,10 @@ class ReviewModule:
             print("-" * 70)
             print("1.  Más detalles (Ficha completa)")
             print("2.  KronoScore Review (Desglose + Gráfico)")
-            print("0.   Volver")
+            print("0.  Volver")
             print("-" * 70)
 
-            opcion = input("\n👉 Selecciona una opción: ").strip()
+            opcion = input("\n Selecciona una opción: ").strip()
 
             if opcion == "1":
                 self.mostrar_detalles_completos(moto)
@@ -204,7 +204,7 @@ class ReviewModule:
 
         if hasattr(moto, "motor") and hasattr(moto.motor, "cilindraje"):
             if moto.motor.cilindraje:
-                print(f"  Cilindraje:     {moto.motor.cilindraje} cc")
+                print(f" Cilindraje:     {moto.motor.cilindraje} cc")
             if moto.motor.potencia:
                 print(f" Potencia:       {moto.motor.potencia}")
             if moto.motor.torque:
@@ -238,7 +238,7 @@ class ReviewModule:
             and moto.atributos_especificos
         ):
             if moto.rendimiento and moto.rendimiento.autonomia:
-                print(f"  Autonomía:      {moto.rendimiento.autonomia:.0f} km")
+                print(f" Autonomía:      {moto.rendimiento.autonomia:.0f} km")
             if moto.atributos_especificos.capacidad_maletas:
                 print(
                     f" Maletas:        {moto.atributos_especificos.capacidad_maletas} L"
@@ -281,7 +281,7 @@ class ReviewModule:
                 hasattr(moto.motor, "autonomia_electrica")
                 and moto.motor.autonomia_electrica
             ):
-                print(f"  Autonomía:      {moto.motor.autonomia_electrica} km")
+                print(f" Autonomía:      {moto.motor.autonomia_electrica} km")
             if hasattr(moto.motor, "tiempo_carga") and moto.motor.tiempo_carga:
                 print(f" Tiempo carga:   {moto.motor.tiempo_carga} h")
 
@@ -296,7 +296,7 @@ class ReviewModule:
                 )
             if moto.atributos_especificos.proteccion_motor:
                 print(
-                    f"  Protección:     {moto.atributos_especificos.proteccion_motor}"
+                    f" Protección:     {moto.atributos_especificos.proteccion_motor}"
                 )
 
         elif (
@@ -316,7 +316,7 @@ class ReviewModule:
         if moto.dimensiones.altura_asiento:
             print(f" Altura asiento: {moto.dimensiones.altura_asiento} mm")
         if moto.dimensiones.peso:
-            print(f"  Peso:           {moto.dimensiones.peso} kg")
+            print(f" Peso:           {moto.dimensiones.peso} kg")
 
     def mostrar_detalles_completos(self, moto):
         self.limpiar_pantalla()
@@ -336,12 +336,12 @@ class ReviewModule:
         print(" KRONOSCORE REVIEW - ANÁLISIS DETALLADO".center(70))
         print("=" * 70 + "\n")
 
-        print(f"🏍️  {moto.info.marca.upper()} {moto.info.modelo.upper()}\n")
+        print(f"  {moto.info.marca.upper()} {moto.info.modelo.upper()}\n")
 
         categorias = [
             (" Rendimiento y Potencia", scores["rendimiento"]),
             (" Consumo y Autonomía", scores["consumoYAutonomia"]),
-            ("  Viajes y Comodidad", scores["viajesYComodidad"]),
+            (" Viajes y Comodidad", scores["viajesYComodidad"]),
             (" Diseño y Materiales", scores["disenoYMateriales"]),
             (" Confiabilidad", scores["confiabilidad"]),
         ]
@@ -411,13 +411,4 @@ class ReviewModule:
         lleno = int((valor / 100) * ancho)
         vacio = ancho - lleno
 
-        if valor >= 80:
-            color = "🟩"
-        elif valor >= 60:
-            color = "🟨"
-        elif valor >= 40:
-            color = "🟧"
-        else:
-            color = "🟥"
-
-        return f"[{'█' * lleno}{'░' * vacio}] {color}"
+        return f"[{'█' * lleno}{'░' * vacio}]"
