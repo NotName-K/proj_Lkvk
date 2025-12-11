@@ -102,7 +102,7 @@ classDiagram
         
     }
 
-    class Buscador {
+    class Kronofind {
        
     }
 
@@ -110,7 +110,7 @@ classDiagram
         
     }
 
-    class KroonoScore {
+    class ReviewModule {
        
     }
 
@@ -128,29 +128,26 @@ classDiagram
     Moto <|-- MotoMotoCarro
     Moto <|-- MotoStreet
     
-     DB --> Moto : gestiona
-    Buscador --> DB : usa
+    DB --> Moto : gestiona
+    Kronofind --> DB : usa
     Comparador --> DB : usa
-    KroonoScore --> Moto : evalúa
+    ReviewModule --> Moto : evalúa
 ```
 ### Base de Datos
 Gestiona toda la persistencia de datos del sistema mediante archivos CSV. Actúa como el intermediario entre la aplicación y el almacenamiento permanente.
 ```mermaid
 classDiagram
     class DB {
-        - archivo_motos: string
-        - archivo_marcas: string
-        + cargar_motos() List~Moto~
-        + guardar_moto(moto: Moto) void
-        + buscar_por_marca(marca: string) List~Moto~
-        + actualizar_precio(modelo: string, nuevo_precio: float) void
+        - conn : Connection
+        - cursor : Cursor
+        - validator : DBScores
     }
     
     class Moto {
         
     }
     
-    class Buscador {
+    class Kronofind {
        
     }
     
@@ -160,23 +157,24 @@ classDiagram
     
     %% RELACIONES
     DB --> Moto : gestiona
-    Buscador --> DB : consulta
+    Kronofind --> DB : consulta
     Comparador --> DB : consulta
 ```
 ### Análisis de Motos
 Realiza búsquedas inteligentes sobre el catálogo de motocicletas, a partir de los filtros que seleccione el usuario.
 ```mermaid
 classDiagram
-    class Buscador {
-        - criteriosAvanzados : Map~string, any~
-        - resultados : List~Moto~
-        - ordenActual : string
-        + buscarModelo(nombre : string) List~Moto~
-        + filtrarPorTipo(tipo : string) List~Moto~
-        + filtrarPorPrecio(min : float, max : float) List~Moto~
-        + ordenarPor(criterio : string) void
-        + mostrarResultados() void
-        + limpiarBusqueda() void
+    class Kronofind {
+        - db : DB
+        - krono = KronoScore
+        + ejecutar()
+        + _calcular_y_ordenar()
+        + mostrar_resultados()
+        + filtrar_por_presupuesto()
+        + filtrar_por_tipo()
+        + filtrar_por_cilindraje()
+        + filtrar_por_uso()
+        + mostrar_top_general()
     }
 
     class DB {
@@ -187,20 +185,31 @@ classDiagram
         %% Entidad principal
     }
 
-    Buscador --> DB : consulta
-    Buscador --> Moto : procesa
+    Kronofind --> DB : consulta
+    Kronofind --> Moto : procesa
 ```
 ### KroonoScore
 Calcula puntuaciones objetivas y estandarizadas para cada motocicleta, basadas en los componentes y el precio, dimensionando 5 apartados y dando una nota final de 1 al 10.
 ```mermaid
 classDiagram
     class KroonoScore {
-        - rendimiento : float
-        - consumoYAutonomia : float
-        - viajesYComodidad : float
-        - disenoYMateriales : float
-        - confiabilidad : float
-        + calcularScore() float
+        - db_scores : DBSCores
+        - db_file : Path
+        + calcular()
+        + _score_rendimiento()
+        + _score_consumo()
+        + _score_viajes()
+        + _score_diseno()
+        + _score_confiabilidad()
+        + _norm()
+        + _ajuste_precio()
+        + comparar_motos()
+        + analizar_categoria()
+        + recomendar_por_presupuesto()
+        + actualizar_promedios_mercado()
+        + vs_mercado()
+        + calcular_precio_promedio_categoria()
+        + clasificar_krono()
     }
 
     class Moto {
@@ -213,6 +222,8 @@ classDiagram
 
     KroonoScore --> Moto : evalúa
     Comparador --> KroonoScore : utiliza
+    Kronofind --> KroonoScore : utiliza
+    ReviewModule --> KroonoScore : utiliza
 ```
 ### Calculo de la calificación
 Tal cual como se menciona en el pasado punto, el algoritmo Kroono_Score evualua 5 parametros, que a su vez poseen sus propios parametros:
