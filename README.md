@@ -536,19 +536,13 @@ def menu(Interfaces: dict, bandera: bool):
             case _:
                 print("Opción no válida. Por favor, ingrese un número entre 1 y 3.")
 ```
-## Líneas de mejoramiento
-Como parte del desarrollo del programa, se tienen pensados ciertos tipos de mejoras que amplian el funcionamiento del proyecto y que entregan resultados más completos a los usuarios, dentro de estas encontramos:
-### Webscrapping
-La idea básica del proyecto es tener una base de datos completa que pueda entregarle la información necesaria al usuario, de cualquier motocicleta que desee, sin embargo, el hacer una base de datos propia con tantos modelos puede ser muy extenso, con lo cual el equipo plante la posibilidad de utilizar la metodología "WebScrapping" para obtener datos de forma automatizada y tener una base de datos mucho más amplia.
-### Más Vehículos
-A pesar de que el pilar del proyecto es facilitar la elección de motocicletas para los usuarios, ya que este mercado es muy diverso para gente sin conocimientos previos, lo cierto es que, también se puede aplicar el mismo enfoque a automoviles, por ejemplo, que a pesar de no tener la misma demanda local, hay personas que pueden llegar a interesarse más por esta función que por la de motos, y así, el equipo considera la posibilidad de añadir otros vehículos al sistema.
 ### Gráficas de estrella
 A la hora de presentar resultados siempre se busca que sean lo más "digeribles" posible para el usuario, así, entregarle un conjunto de datos numéricos o booleanos realmente no ayudaría a la gruesa parte de la población sin tantos conocimientos técnicos sobre el tema, por tanto el equipo considera que lo ideal sería poder representar las características de las motocicletas en una especie de "Diagramas de Estrella" que puedan mostrar que tanto se especializa o es buena una determinada moto en un ambito, por ejemplo ahorro de gasolina.
 
 Un ejemplo de cómo se vería este tipo de gráfico:
 [![image.png](https://i.postimg.cc/d3NK6yTG/image.png)](https://postimg.cc/30G6JW1w)
 
-## Web Scraping
+## Base de datos
 
 Para la creación de la base de datos que se requiere para el proyecto, se realiza un codigo que realice web scrapping a paginas que vendan motos. Se utliza principalmente las bibliotecas de Selenium y el modulo BeautifulSoup de la libreria bs4.
 
