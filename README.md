@@ -141,6 +141,33 @@ classDiagram
         - conn : Connection
         - cursor : Cursor
         - validator : DBScores
+        + cerrar()
+        + get_moto()
+        + listar_motos()
+        + agregar_moto_db()
+        + borrar_moto_db()
+        + pedir_texto_validado()
+        + pedir_float_validado()
+        + pedir_int_validado()
+        + pedir_texto()
+        + pedir_float()
+        + pedir_int()
+        + pedir_potencia()
+        + pedir_torque()
+        + pd_naked()
+        + pd_sport()
+        + pd_touring()
+        + pd_scooter()
+        + pd_street()
+        + pd_doble_pps()
+        + pd_adventure()
+        + pd_electric()
+        + pd_motocarro()
+        + agregar_moto()
+        + obtener_modelos_por_marca()
+        + obtener_detalles()
+        + actualizar_campo_moto()
+        + eliminar_moto()
     }
     
     class Moto {
@@ -442,6 +469,33 @@ classDiagram
         - conn : Connection
         - cursor : Cursor
         - validator : DBScores
+        + cerrar()
+        + get_moto()
+        + listar_motos()
+        + agregar_moto_db()
+        + borrar_moto_db()
+        + pedir_texto_validado()
+        + pedir_float_validado()
+        + pedir_int_validado()
+        + pedir_texto()
+        + pedir_float()
+        + pedir_int()
+        + pedir_potencia()
+        + pedir_torque()
+        + pd_naked()
+        + pd_sport()
+        + pd_touring()
+        + pd_scooter()
+        + pd_street()
+        + pd_doble_pps()
+        + pd_adventure()
+        + pd_electric()
+        + pd_motocarro()
+        + agregar_moto()
+        + obtener_modelos_por_marca()
+        + obtener_detalles()
+        + actualizar_campo_moto()
+        + eliminar_moto()
     }
     
     class Kronofind {
@@ -491,6 +545,7 @@ De manera general, para cada menu se utiliza un ciclo while para ingresar la opc
 A la hora de presentar resultados siempre se busca que sean lo más "digeribles" posible para el usuario, así, entregarle un conjunto de datos numéricos o booleanos realmente no ayudaría a la gruesa parte de la población sin tantos conocimientos técnicos sobre el tema, por tanto el equipo consideró que lo ideal sería poder representar las características de las motocicletas en un diagramas de radar en el que se pueda mostrar que tanto se especializa o es buena una determinada moto en un ambito, por ejemplo rendimiento y potencia.
 
 Un ejemplo de cómo se vee este tipo de gráfico:
+
 [![image.png](https://i.postimg.cc/d3NK6yTG/image.png)](https://postimg.cc/30G6JW1w)
 
 Por ende el usuario podrá apreciar estos gráficos tanto al a hora de ver el rendimiento de una moto en particular, como comparando dos de ellas.
