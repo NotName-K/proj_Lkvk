@@ -1,5 +1,5 @@
 # proj_LVK
-## Grupo: KROONS
+## Grupo: KROONOS
 ![Logo](https://github.com/NotName-K/POO-R2/blob/main/Screenshot%202025-09-23%20110719.png?raw=true)
 
 #### Integrantes
@@ -273,7 +273,6 @@ Tal cual como se menciona en el pasado punto, el algoritmo Kroono_Score evualua 
 - Estética
 - Instrumentos
 
-
 #### Confort y Consumo
 - Altura
 - Autonomía
@@ -281,7 +280,7 @@ Tal cual como se menciona en el pasado punto, el algoritmo Kroono_Score evualua 
 - Tanque
 - Comodidad
 - Ergonomía
-- 
+
 #### Confiabilidad
 - Fiabilidad de la Marca
 - $ de Mantenimiento estimado
@@ -496,6 +495,19 @@ Un ejemplo de cómo se vee este tipo de gráfico:
 
 Por ende el usuario podrá apreciar estos gráficos tanto al a hora de ver el rendimiento de una moto en particular, como comparando dos de ellas.
 ## Aplicación del programa
-### Requerimientos
-### Cómo usarlo
+### Instalación del programa
+Para instalar el programa hay que seguir los pasos descritos a continuación:
+- **Primero**: Hay que instalar el lenguaje de programación "python" en el sistema operativo.
+Para esto se debe ingresar a la página oficial y [descargar python](https://www.python.org/downloads/) en la versión más actual posible para tu sistema operativo.
 
+Si estas usando Windows puedes comprobar que la instalación haya funcionado abriendo la consola de Windows, presionando (win + r), y escribir "python --version", si funcionó debería responder con la versión descargada y ya se tendría al interprete instalado, no obstante, si no funcionó tendrás que descargalo directamente en la tienda de Microsoft para luego ya realizar comprobación y muy seguramente ya habrá funcionado.
+  
+- **Segundo**: Debes descargar la carpeta [proj_lvk](https://github.com/NotName-K/proj_Lkvk/tree/c9d9bbd94f192431447027eeba506275383c5667/proj_Lkv) de python y abrirla en un editor de código como puede ser [Visual Studio Code](https://code.visualstudio.com/download).
+### Requerimientos
+Para poder correr el código necesitas tener instalada la librería "matplotlib" en su versión más reciente, para ello dentro de la consola abierta en la carpeta ya instalada a través del editor de código, ingresa el siguiente comando:
+```python
+pip install matplotlib
+```
+En caso de no funcionar se requiera el descargar "pip", para eso revisar el siguiente [enlace](https://pip.pypa.io/en/stable/installation/).
+### Cómo usarlo
+Para usar el programa es bastante sencillo, el usuario debe ingresar al archivo [main.py](https://github.com/NotName-K/proj_Lkvk/blob/c9d9bbd94f192431447027eeba506275383c5667/proj_Lkv/Main/main.py) dentro de la carpeta "Main" al interior de "proj_lvk" y ejecutar el programa con el boton integrado en el editor de código.
