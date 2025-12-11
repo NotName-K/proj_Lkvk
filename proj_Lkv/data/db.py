@@ -427,7 +427,7 @@ class DB:
             else:
                 print("Tipo inválido. Debes seleccionar un número entre 1 y 9.")
 
-        print(f"\n✅ Tipo seleccionado: {tps.upper()}")
+        print(f"\n Tipo seleccionado: {tps.upper()}")
 
         marca = self.pedir_texto_validado("Marca: ", "marca", obligatorio=True)
         modelo = self.pedir_texto("Modelo: ")
