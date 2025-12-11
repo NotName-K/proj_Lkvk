@@ -330,13 +330,10 @@ class Atb_Motocarro:
 
 class Moto:
     
-    def __init__(self, db, moto_id):
-        data = db.get_moto(moto_id)
-        if not data:
-            raise ValueError(f"No existe moto con id {moto_id}")
+    def __init__(self, moto_id, data):
         
+        self.moto_id = moto_id
         self.data = data
-        
         self.info = InfoGeneral(data)
         self.transmision = Transmision(data)
         self.electronica = SistemaElectronico(data)
@@ -745,14 +742,7 @@ class MotoNaked(Moto):
             'cilindraje': self.motor.cilindraje,
             'precio': self.info.precio
         }
-    
-    def _calcular_versatilidad_urbana(self):
-        score = 50
-        if self.dimensiones.altura_asiento and self.dimensiones.altura_asiento < 800:
-            score += 25
-        if self.dimensiones.peso and self.dimensiones.peso < 200:
-            score += 25
-        return score
+
 
 
 class MotoStreet(Moto):
@@ -794,17 +784,16 @@ def crear_moto(db, moto_id):
         return None
     
     tipos = {
-    'naked': MotoNaked,
-    'sport': MotoSport,
-    'touring': MotoTouring,
-    'adventure': MotoTouring,  
-    'scooter': MotoScooter,
-    'street': MotoStreet,
-    'doble pps': MotoDoblePps,
-    'electric': MotoElectric,
-    'motocarro': MotoMotocarro
-}
+        'naked': MotoNaked,
+        'sport': MotoSport,
+        'touring': MotoTouring,
+        'adventure': MotoTouring,
+        'scooter': MotoScooter,
+        'street': MotoStreet,
+        'doble pps': MotoDoblePps,
+        'electric': MotoElectric,
+        'motocarro': MotoMotocarro
+    }
     
     clase = tipos.get(data['tipo'].lower(), Moto)
-    return clase(db, moto_id)
-
+    return clase(moto_id, data)
