@@ -161,12 +161,44 @@ classDiagram
     Comparador --> DB : consulta
 ```
 ### Análisis de Motos
+Entrega información destacada, junto con valores de calidad y precio para poder dar una recomendación al usuario, si este lo desea puede ver un gráfico donde se ve más a profundidad la puntuación obtenida, o también recibir un informe más detallado.
+```mermaid
+classDiagram
+    class ReviewModule {
+        - db : DB
+        - db_score: DBScores
+        - krono : KronoScore
+        + limpiar_pantalla()
+        + pausar()
+        + ejecutar()
+        + seleccionar_marca()
+        + seleccionar_modelo()
+        + mostrar_review_completo()
+        + mostrar_info_especifica()
+        + mostrar_detalles_completos()
+        + kronoscore_review()
+        + generar_grafico_radar()
+        + barra_visual()
+    }
+
+    class DB {
+        %% Gestor de base de datos
+    }
+
+    class Moto {
+        %% Entidad principal
+    }
+
+    ReviewModule --> DB : consulta
+    ReviewModule --> Moto : procesa
+```
+### Búsqueda de Motos
 Realiza búsquedas inteligentes sobre el catálogo de motocicletas, a partir de los filtros que seleccione el usuario.
 ```mermaid
 classDiagram
     class Kronofind {
         - db : DB
-        - krono = KronoScore
+        - krono : KronoScore
         + ejecutar()
         + _calcular_y_ordenar()
         + mostrar_resultados()
@@ -332,13 +364,11 @@ Permite contrastar múltiples motocicletas simultáneamente, mostrando diferenci
 ```mermaid
 classDiagram
     class Comparador {
-        - listaMotos : List~Moto~
-        - motosSeleccionadas : List~Moto~
-        - resultadoComparacion : Map~string, Moto~
-        + agregarMoto(moto : Moto) void
-        + mostrarComparacion() void
-        + graficaComparacion(formato : ) void
-        + limpiarComparador() void
+        - db : DB
+        - krono : KronoScore
+        + ejecutar()
+        + mostrar_comparacion()
+        + mostrar_radar_comparativo()
     }
 
     class Moto {
@@ -356,210 +386,116 @@ classDiagram
 Aqui se muestra el funcionamiento de las clases antes descritas:
 ```mermaid
 classDiagram
-    %% ===== Clases principales =====
-    class Marca {
-        - nombre : string
-        - pais : string
-        - motos : List~Moto~
-        + agregarMoto(moto : Moto) void
-        + mostrarModelos() void
-    }
-
     class Moto {
-        - marca : string
-        - modelo : string
-        - cilindraje : int
-        - suspension : string
-        - peso : float
-        - precio : float
-        - vel_crucero : float
-        - lanzamiento : date
-        - seguridad : List~string~
-        - accesorios : List~string~
-        - transmision : string
-        - iluminacion : string
-        - relacionPP : float
-        - topSpeed : float
-        - caracteristicaDestacada : string
-        - fallosComunes : List~string~
-        + calcularScore() float
-        + mostrarFicha() void
+        - moto_id : int
+        - data : dict
+        - info : InfoGeneral
+        - transmisión : Transmisión
+        - electronica : SistemaElectronica
+        - chasis : Chasis
+        - dimensiones : Dimensiones
+        - motor : Motor | MotorElectrico
+        - rendimiento : None | Rendimiento
     }
-
-    class KroonoScore {
-        - rendimiento : float
-        - consumoYAutonomia : float
-        - viajesYComodidad : float
-        - disenoYMateriales : float
-        - confiabilidad : float
-        + calcularScore() float
+    class MotoSport {
+        
     }
-
-    class Concesionario {
-        - nombre : string
-        - nivelPostventa : int
-        - añosGarantia : int
-    }
-
-    class Comparador {
-    - listaMotos : List~Moto~
-    - motosSeleccionadas : List~Moto~
-    - resultadoComparacion : Map~string, Moto~
-    + agregarMoto(moto : Moto) void
-    + mostrarComparacion() void
-    + graficaComparacion(formato : ) void
-    + limpiarComparador() void
-}
-
-
-    class Buscador {
-    - criteriosAvanzados : Map~string, any~
-    - resultados : List~Moto~
-    - ordenActual : string
-    + buscarModelo(nombre : string) List~Moto~
-    + filtrarPorTipo(tipo : string) List~Moto~
-    + filtrarPorPrecio(min : float, max : float) List~Moto~
-    + ordenarPor(criterio : string) void
-    + mostrarResultados() void
-    + limpiarBusqueda() void
-}
-
-
-    class EvaluadorSegundaMano {
-        - moto : Moto
-        - kmActual : int
-        - precio: float
-        - precio_prom : float
-        - añoCompra : int
-        - condiciones : Map~string, int~
-        - promedioCondicion : float
-        - scoreFinal : float
-        - recomendacion : string
-        + solicitarDatosUsuario() void
-        + verificarKilometraje() bool
-        + calcularCondicionPromedio() float
-        + calcularScoreFinal() float
-        + generarRecomendacion() string
-        + mostrarInforme() void
-    }
-
- class DB {
-        - archivo_motos: string
-        - archivo_marcas: string
-        + cargar_motos() List~Moto~
-        + guardar_moto(moto: Moto) void
-        + buscar_por_marca(marca: string) List~Moto~
-        + actualizar_precio(modelo: string, nuevo_precio: float) void
-}
-DB  --> "many" Moto : gestiona
-    Buscador --> DB : usa
-    Comparador --> DB : usa
-    Marca "1" --> "many" Moto : contiene
-    
-    
-
-    class MotoNaked {
-        + estiloDeConduccion() string
-    }
-
-    class MotoDeportiva {
-        + modoDeConduccion() string
-    }
-
-    class MotoMultiproposito {
-        + tipoDeTerreno() string
-    }
-
     class MotoTouring {
-        + capacidadDeCarga() float
+        
     }
 
     class MotoScooter {
-        + tipoDeTransmision() string
+        
+    }
+    class MotoElectric {
+        
+    }
+    class MotoDoblePps {
+        
+    }
+    class MotoMotoCarro {
+        
+    }
+    class MotoNaked {
+        
     }
 
-    %% ===== Relaciones =====
-    Marca "1" --> "many" Moto : contiene >
-    Moto "1" --> "1" KroonoScore : calcula >
-    Comparador "1" --> "many" Moto : compara >
-    Buscador "1" --> "many" Moto : filtra >
-    Concesionario "1" --> "many" Moto : vende >
-    EvaluadorSegundaMano --> Moto : evalúa >
-    Comparador --> EvaluadorSegundaMano : usa >
-
-
-    %% ===== Herencias =====
+    class MotoStreet {
+        
+    }
+    class ReviewModule {
+        - db : DB
+        - db_score: DBScores
+        - krono : KronoScore
+        + limpiar_pantalla()
+        + pausar()
+        + ejecutar()
+        + seleccionar_marca()
+        + seleccionar_modelo()
+        + mostrar_review_completo()
+        + mostrar_info_especifica()
+        + mostrar_detalles_completos()
+        + kronoscore_review()
+        + generar_grafico_radar()
+        + barra_visual()
+    }
+    class DB {
+        - conn : Connection
+        - cursor : Cursor
+        - validator : DBScores
+    }
+    
+    class Kronofind {
+        - db : DB
+        - krono : KronoScore
+        + ejecutar()
+        + _calcular_y_ordenar()
+        + mostrar_resultados()
+        + filtrar_por_presupuesto()
+        + filtrar_por_tipo()
+        + filtrar_por_cilindraje()
+        + filtrar_por_uso()
+        + mostrar_top_general()
+    }
+    
+    class Comparador {
+        - db : DB
+        - krono : KronoScore
+        + ejecutar()
+        + mostrar_comparacion()
+        + mostrar_radar_comparativo()
+    }
+ 
     Moto <|-- MotoNaked
-    Moto <|-- MotoDeportiva
-    Moto <|-- MotoMultiproposito
+    Moto <|-- MotoSport
     Moto <|-- MotoTouring
     Moto <|-- MotoScooter
-
+    Moto <|-- MotoElectric
+    Moto <|-- MotoDoblePps
+    Moto <|-- MotoMotoCarro
+    Moto <|-- MotoStreet
+    
+    DB --> Moto : gestiona
+    Kronofind --> DB : usa
+    Comparador --> DB : usa
+    ReviewModule --> Moto : evalúa
+    ReviewModule --> DB : consulta
 ```
 
-## Apartado Gráfico y Menús
-Se utilizan prints en la consola donde el usuario ingresa números para escoger ciertas opciones.
-```python
-bandera : bool = True
-    I1 : str = """
-        Bienvenido a Look_Vike, comparador de motocicletas \n
-            |        Menú Principal       |
-            |  1  |  Buscador             |
-            |  2  |  Comparador           |
-            |  3  |  Cerrar el programa   |
-        """
-    I2 : str = """
-            Opciones de Buscador:
-            |    Seleccione una opción    |
-            |  1  |    Buscar modelos     |
-            |  2  |      Filtrar          |
-            |  3  |      Ordenar          |
-            |  4  |  Limpiar búsqueda     |
-            |  5  |       Atrás           |
-        """
-    I3 : str = """
-            Opciones de Comparación:
-            |    Seleccione una opción    |
-            |  1  | Agregar moto          |
-            |  2  | Comparación           |
-            |  3  | Lista ordenada        |
-            |  4  | Limpiar comparador    |
-            |  5  |       Atrás           |
-        """
-        # Se guardan las interfaces en un diccionario para facilitar su transporte entre funciones
-    Interfaces: dict = {"General": I1,"Buscador":I2, "Comparador": I3}
-        
-        # Se llama a la función del menú y se ingresan las interfaces junto con la bandera
-    menu(Interfaces, bandera)
-```
-De manera general, para cada menu se utiliza un ciclo while para ingresar la opción, añadiendo un caso de Except si hay un ValueError, y luego se utiliza la estructura mathc-case para derivar al usuario a la función que controla la opción seleccionada, por ejemplo terminar el programa.
-```python
-def menu(Interfaces: dict, bandera: bool):
-    while bandera == True:
-        # Mostrar el menú
-        print(Interfaces["General"])
-        # Se elige una opción de la interfaz mostrada
-        try:
-            a = int(input("Seleccione una opción: "))
-        except ValueError:
-            print("Por favor, ingrese un número entero válido.")
-            continue
-            
-        # Ejecutar la opción seleccionada
-        match a: # Se redirige a la función deseada por el usuario
-            case 1:
-                buscador(Interfaces)
-            case 2:
-                comparador(Interfaces)
-            case 3:
-                print("Fin del programa")
-                bandera = False # Se actualiza la bandera para dar fin al bucle y al programa
-            case _:
-                print("Opción no válida. Por favor, ingrese un número entre 1 y 3.")
-```
-### Gráficas de estrella
-A la hora de presentar resultados siempre se busca que sean lo más "digeribles" posible para el usuario, así, entregarle un conjunto de datos numéricos o booleanos realmente no ayudaría a la gruesa parte de la población sin tantos conocimientos técnicos sobre el tema, por tanto el equipo considera que lo ideal sería poder representar las características de las motocicletas en una especie de "Diagramas de Estrella" que puedan mostrar que tanto se especializa o es buena una determinada moto en un ambito, por ejemplo ahorro de gasolina.
+## Interacción con el usuario
+### Menús
+Se utilizan prints en la consola que le dan opciones al usuario para redirigirlo a las funciones que desea, cada menú que pasa se va borrando, permitiendo una interfaz limpia que facilita el entendimiento del usuario.
 
-Un ejemplo de cómo se vería este tipo de gráfico:
+De manera general, para cada menu se utiliza un ciclo while para ingresar la opción deseada, para lo cual el programa hara comparaciones a través de condicionales, los cuáles permiten el avance entre distintos menús y entregan la información que el usuario requiere, al terminar selecciona la opción 0 en el menú principal y el programa termina finalmente.
+
+### Gráficas de radar
+A la hora de presentar resultados siempre se busca que sean lo más "digeribles" posible para el usuario, así, entregarle un conjunto de datos numéricos o booleanos realmente no ayudaría a la gruesa parte de la población sin tantos conocimientos técnicos sobre el tema, por tanto el equipo consideró que lo ideal sería poder representar las características de las motocicletas en un diagramas de radar en el que se pueda mostrar que tanto se especializa o es buena una determinada moto en un ambito, por ejemplo rendimiento y potencia.
+
+Un ejemplo de cómo se vee este tipo de gráfico:
 [![image.png](https://i.postimg.cc/d3NK6yTG/image.png)](https://postimg.cc/30G6JW1w)
+
+Por ende el usuario podrá apreciar estos gráficos tanto al a hora de ver el rendimiento de una moto en particular, como comparando dos de ellas.
+## Aplicación del programa
+### Requerimientos
+### Cómo usarlo
 
