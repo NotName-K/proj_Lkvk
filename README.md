@@ -37,25 +37,25 @@ Con las herramientas aprendidas en el curso POO, identificamos que es posible cr
 ```text
 proj_Lkv/
 │
-├── 📂 Core/             # Lógica de Negocio Pura
+├──  Core/             # Lógica de Negocio Pura
 │   ├── __init__.py      # iniciador del paquete Core
 │   ├── moto.py         # Modelado de clases (Composición) y Factory Method
 │   └── kroono_score.py # Algoritmo matemático de puntuación
 │
-├── 📂 Services/         # Controladores de la Aplicación
+├──  Services/         # Controladores de la Aplicación
 │   ├── __init__.py      # iniciador del paquete Services
 │   ├── admin_kroonos.py # Gestión CRUD (Modo Administrador)
 │   ├── kroono_find.py   # Motor de búsqueda y filtrado
 │   ├── kroono_view.py   # Visualizador de fichas y gráficos
 │   └── kroono_vs.py     # Comparador de motocicletas
 │
-├── 📂 data/             # Capa de Persistencia
+├──  data/             # Capa de Persistencia
 │   ├── __init__.py      # iniciador del paquete data
 │   ├── db.py           # Gestor de conexión SQLite
 │   ├── db_scores.py    # Validador y normalizador de datos
 │   └── scores_db_init.py # Inicializador de tablas maestras
 │
-└── 📂 Main/             # Punto de Entrada
+└──  Main/             # Punto de Entrada
     ├── __init__.py      # iniciador del paquete Main
     └── main.py         # Orquestador e Inyección de Dependencias
 ```
@@ -64,37 +64,20 @@ proj_Lkv/
 Representa cada motocicleta con sus características técnicas y capacidades de evaluación, con herencias de los tipos de motos que hay en el mercado con sus caracteristicas especiales, además de estar complementada por clases que manejan la búsqueda, comparación, y lógica de Score, todo esto se guarda en la base de datos.
 ```mermaid
 classDiagram
-    %% ===== CLASE PRINCIPAL =====
     class Moto {
-        - marca : string
-        - modelo : string
-        - cilindraje : int
-        - suspension : string
-        - peso : float
-        - precio : float
-        - vel_crucero : float
-        - lanzamiento : date
-        - seguridad : List~string~
-        - accesorios : List~string~
-        - transmision : string
-        - iluminacion : string
-        - relacionPP : float
-        - topSpeed : float
-        - caracteristicaDestacada : string
-        - fallosComunes : List~string~
-        + calcularScore() float
-        + mostrarFicha() void
+        - moto_id : int
+        - data : dict
+        - info : InfoGeneral
+        - transmisión : Transmisión
+        - electronica : SistemaElectronica
+        - chasis : Chasis
+        - dimensiones : Dimensiones
+        - motor : Motor | MotorElectrico
+        - rendimiento : None | Rendimiento
     }
-
-   
-    class MotoNaked {
+    class MotoSport {
         
     }
-
-    class MotoDeportiva {
-        
-    }
-
     class MotoTouring {
         
     }
@@ -102,8 +85,23 @@ classDiagram
     class MotoScooter {
         
     }
+    class MotoElectric {
+        
+    }
+    class MotoDoblePps {
+        
+    }
+    class MotoMotoCarro {
+        
+    }
+    class MotoNaked {
+        
+    }
 
-    
+    class MotoStreet {
+        
+    }
+
     class Buscador {
        
     }
@@ -122,10 +120,14 @@ classDiagram
 
  
     Moto <|-- MotoNaked
-    Moto <|-- MotoDeportiva
+    Moto <|-- MotoSport
     Moto <|-- MotoTouring
     Moto <|-- MotoScooter
-
+    Moto <|-- MotoElectric
+    Moto <|-- MotoDoblePps
+    Moto <|-- MotoMotoCarro
+    Moto <|-- MotoStreet
+    
      DB --> Moto : gestiona
     Buscador --> DB : usa
     Comparador --> DB : usa
