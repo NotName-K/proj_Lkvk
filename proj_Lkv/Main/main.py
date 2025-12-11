@@ -1,5 +1,6 @@
 import sys
 import os
+
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from data.db import DB, init_db
 from data.db_scores import DBScores
@@ -8,16 +9,19 @@ from Services.kroono_view import ReviewModule
 from Services.admin_kroonos import admin_mode
 from Services.kroono_view import ReviewModule
 
+
 def limpiar():
-    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system("cls" if os.name == "nt" else "clear")
+
 
 def pausar():
     input("\nPresiona ENTER para continuar...")
 
+
 def main():
     limpiar()
     print("Iniciando KronoScorer...\n")
-    
+
     init_db()
     db = DB()
     db_scores = DBScores()
@@ -25,25 +29,27 @@ def main():
 
     while True:
         limpiar()
-        print("="*60)
+        print("=" * 60)
         print("     KRONOSCORER - Motocicletas")
-        print("="*60)
+        print("=" * 60)
         print("\n1. Review de una moto")
         print("2. Comparar motos")
         print("3. KronoFind")
         print("4. ADMIN Mode")
         print("\n0. Salir")
-        print("-"*60)
-        
+        print("-" * 60)
+
         op = input("\nElige: ").strip()
 
         if op == "1":
             ReviewModule(db, db_scores, krono).ejecutar()
         elif op == "2":
             from Services.kroono_vs import Comparador
+
             Comparador(db, krono).ejecutar()
         elif op == "3":
             from Services.kroono_find import KronoFind
+
             KronoFind(db, krono).ejecutar()
         elif op == "4":
             admin_mode()
@@ -55,6 +61,7 @@ def main():
             pausar()
 
     db.cerrar()
+
 
 if __name__ == "__main__":
     main()

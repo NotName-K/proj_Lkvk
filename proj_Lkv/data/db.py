@@ -7,6 +7,7 @@ from data.db_scores import DBScores
 DB_PATH = Path(__file__).parent / "data" / "moto.db"
 DB_PATH.parent.mkdir(parents=True, exist_ok=True)
 
+
 def init_db():
     conn = sqlite3.connect(DB_PATH)
     conn.execute("""
@@ -102,11 +103,11 @@ class DB:
     def __init__(self):
         self.conn = sqlite3.connect(DB_PATH)
         self.conn.row_factory = sqlite3.Row
-        self.cursor = self.conn.cursor()  
+        self.cursor = self.conn.cursor()
         self.validator = DBScores()
 
     def cerrar(self):
-        self.conn.commit()  
+        self.conn.commit()
         self.conn.close()
 
     def get_moto(self, moto_id):
@@ -126,46 +127,45 @@ class DB:
             filas = self.cursor.fetchall()
             return [
                 {
-                    'id': f[0],
-                    'marca': f[1],
-                    'modelo': f[2],
-                    'tipo': f[3],
-                    'precio': f[4],
-                    'año': f[5]
-                } for f in filas
+                    "id": f[0],
+                    "marca": f[1],
+                    "modelo": f[2],
+                    "tipo": f[3],
+                    "precio": f[4],
+                    "año": f[5],
+                }
+                for f in filas
             ]
         except Exception as e:
             print(f"Error al listar: {e}")
             return []
 
     def agregar_moto_db(self, moto):
-        columnas = ', '.join(moto.keys())
-        placeholders = ':' + ', :'.join(moto.keys())
-        sql = f"INSERT OR REPLACE INTO moto ({columnas}) VALUES ({placeholders})"  
+        columnas = ", ".join(moto.keys())
+        placeholders = ":" + ", :".join(moto.keys())
+        sql = f"INSERT OR REPLACE INTO moto ({columnas}) VALUES ({placeholders})"
         self.cursor.execute(sql, moto)
         self.conn.commit()
-        return moto['id']
+        return moto["id"]
 
     def borrar_moto_db(self, moto_id):
         self.cursor.execute("DELETE FROM moto WHERE id = ?", (moto_id,))
         self.conn.commit()
 
-    
-
     def pedir_texto_validado(self, msg, campo, obligatorio=False):
         """Pide texto y valida contra valores_validos"""
         while True:
             valor = input(msg).strip()
-            
+
             if not valor and not obligatorio:
                 return None
-            
+
             if not valor and obligatorio:
                 print("  Este campo es obligatorio")
                 continue
-            
+
             es_valido, mensaje = self.validator.validar_valor(campo, valor)
-            
+
             if es_valido:
                 return self.validator.normalizar_valor(campo, valor)
             else:
@@ -177,22 +177,22 @@ class DB:
         while True:
             try:
                 valor_str = input(msg).strip()
-                
+
                 if not valor_str and not obligatorio:
                     return None
-                
+
                 if not valor_str and obligatorio:
                     print("  Este campo es obligatorio")
                     continue
-                
+
                 valor = float(valor_str)
                 es_valido, mensaje = self.validator.validar_numero(campo, valor)
-                
+
                 if es_valido:
                     return valor
                 else:
                     print(mensaje)
-                    
+
             except ValueError:
                 print("Número inválido. Intenta de nuevo.")
                 rango = self.validator.get_rango_valido(campo)
@@ -204,22 +204,22 @@ class DB:
         while True:
             try:
                 valor_str = input(msg).strip()
-                
+
                 if not valor_str and not obligatorio:
                     return None
-                
+
                 if not valor_str and obligatorio:
                     print("  Este campo es obligatorio")
                     continue
-                
+
                 valor = int(valor_str)
                 es_valido, mensaje = self.validator.validar_numero(campo, valor)
-                
+
                 if es_valido:
                     return valor
                 else:
                     print(mensaje)
-                    
+
             except ValueError:
                 print(" Número inválido. Intenta de nuevo.")
                 rango = self.validator.get_rango_valido(campo)
@@ -251,10 +251,8 @@ class DB:
                 return int(valor)
             except ValueError:
                 print(" Número inválido")
-                
-    def pedir_potencia(self):
-        
 
+    def pedir_potencia(self):
         while True:
             txt = input("Potencia (ej: 15 hp, 8000): ").lower().strip()
 
@@ -263,10 +261,9 @@ class DB:
                 print(" Formato inválido. Ejemplo correcto: 15 hp, 8000")
                 continue
 
-            valor = float(match.group(1))    
-            rpm = int(match.group(4))        
+            valor = float(match.group(1))
+            rpm = int(match.group(4))
 
-        
             if not (1 <= valor <= 300):
                 print(" Potencia fuera de rango (1–300 hp)")
                 continue
@@ -276,7 +273,7 @@ class DB:
                 continue
 
             return txt
-        
+
     def pedir_torque(self):
         import re
 
@@ -288,9 +285,9 @@ class DB:
                 print(" Formato inválido. Ejemplo correcto: 14 nm, 6500")
                 continue
 
-            valor = float(match.group(1))    
-            rpm = int(match.group(3))        
-        
+            valor = float(match.group(1))
+            rpm = int(match.group(3))
+
             if not (1 <= valor <= 300):
                 print(" Torque fuera de rango (1–300 Nm)")
                 continue
@@ -301,34 +298,51 @@ class DB:
 
             return txt
 
-
-    
-
     def pd_naked(self):
         return {
-            'aceleracion_0_100': self.pedir_float_validado("Aceleración 0-100 km/h (s): ", "aceleracion_0_100"),
+            "aceleracion_0_100": self.pedir_float_validado(
+                "Aceleración 0-100 km/h (s): ", "aceleracion_0_100"
+            ),
         }
 
     def pd_sport(self):
         return {
-            'aceleracion_0_100': self.pedir_float_validado("Aceleración 0-100 km/h (s): ", "aceleracion_0_100"),
-            'modos_manejo': self.pedir_texto("Modos de conducción (Rain, Road, Sport): "),
+            "aceleracion_0_100": self.pedir_float_validado(
+                "Aceleración 0-100 km/h (s): ", "aceleracion_0_100"
+            ),
+            "modos_manejo": self.pedir_texto(
+                "Modos de conducción (Rain, Road, Sport): "
+            ),
         }
 
     def pd_touring(self):
         return {
-            'capacidad_maletas': self.pedir_float_validado("Capacidad maletas (L): ", "capacidad_maletas"),
-            'parabrisas_ajustable': self.pedir_texto_validado("¿Parabrisas ajustable? (si/no): ", "parabrisas_ajustable"),
-            'control_crucero': self.pedir_texto_validado("¿Control crucero? (si/no): ", "control_crucero"),
-            'tanque_grande': self.pedir_texto_validado("¿Tanque grande? (si/no): ", "tanque_grande"),
-            'proteccion_motor': self.pedir_texto_validado("¿Protección motor? (si/no): ", "proteccion_motor"),
-            'suspension_largo_recorrido': self.pedir_texto_validado("¿Suspensión largo recorrido? (si/no): ", "suspension_largo_recorrido"),
-            'modos_manejo': self.pedir_texto("Modos de manejo: "),
+            "capacidad_maletas": self.pedir_float_validado(
+                "Capacidad maletas (L): ", "capacidad_maletas"
+            ),
+            "parabrisas_ajustable": self.pedir_texto_validado(
+                "¿Parabrisas ajustable? (si/no): ", "parabrisas_ajustable"
+            ),
+            "control_crucero": self.pedir_texto_validado(
+                "¿Control crucero? (si/no): ", "control_crucero"
+            ),
+            "tanque_grande": self.pedir_texto_validado(
+                "¿Tanque grande? (si/no): ", "tanque_grande"
+            ),
+            "proteccion_motor": self.pedir_texto_validado(
+                "¿Protección motor? (si/no): ", "proteccion_motor"
+            ),
+            "suspension_largo_recorrido": self.pedir_texto_validado(
+                "¿Suspensión largo recorrido? (si/no): ", "suspension_largo_recorrido"
+            ),
+            "modos_manejo": self.pedir_texto("Modos de manejo: "),
         }
 
     def pd_scooter(self):
         return {
-            'espacio_baul': self.pedir_float_validado("Espacio baúl (L): ", "espacio_baul"),
+            "espacio_baul": self.pedir_float_validado(
+                "Espacio baúl (L): ", "espacio_baul"
+            ),
         }
 
     def pd_street(self):
@@ -336,92 +350,121 @@ class DB:
 
     def pd_doble_pps(self):
         return {
-            'suspension_largo_recorrido': self.pedir_texto_validado("¿Suspensión largo recorrido? (si/no): ", "suspension_largo_recorrido"),
-            'proteccion_motor': self.pedir_texto_validado("¿Protección motor? (si/no): ", "proteccion_motor"),
-            'tanque_grande': self.pedir_texto_validado("¿Tanque grande? (si/no): ", "tanque_grande"),
+            "suspension_largo_recorrido": self.pedir_texto_validado(
+                "¿Suspensión largo recorrido? (si/no): ", "suspension_largo_recorrido"
+            ),
+            "proteccion_motor": self.pedir_texto_validado(
+                "¿Protección motor? (si/no): ", "proteccion_motor"
+            ),
+            "tanque_grande": self.pedir_texto_validado(
+                "¿Tanque grande? (si/no): ", "tanque_grande"
+            ),
         }
 
     def pd_adventure(self):
         return {
-            'maletas_laterales': self.pedir_texto_validado("¿Maletas laterales? (si/no): ", "maletas_laterales"),
-            'proteccion_motor': self.pedir_texto_validado("¿Protección de motor? (si/no): ", "proteccion_motor"),
-            'suspension_ajustable': self.pedir_texto_validado("¿Suspensión ajustable? (si/no): ", "suspension_ajustable"),
-            'modos_manejo': self.pedir_texto("Modos de manejo: "),
+            "maletas_laterales": self.pedir_texto_validado(
+                "¿Maletas laterales? (si/no): ", "maletas_laterales"
+            ),
+            "proteccion_motor": self.pedir_texto_validado(
+                "¿Protección de motor? (si/no): ", "proteccion_motor"
+            ),
+            "suspension_ajustable": self.pedir_texto_validado(
+                "¿Suspensión ajustable? (si/no): ", "suspension_ajustable"
+            ),
+            "modos_manejo": self.pedir_texto("Modos de manejo: "),
         }
 
     def pd_electric(self):
         return {
-            'bateria_capacidad': self.pedir_float_validado("Capacidad batería (kWh): ", "bateria_capacidad"),
-            'autonomia_electrica': self.pedir_float_validado("Autonomía eléctrica (km): ", "autonomia_electrica"),
-            'tiempo_carga': self.pedir_float_validado("Tiempo de carga (h): ", "tiempo_carga"),
+            "bateria_capacidad": self.pedir_float_validado(
+                "Capacidad batería (kWh): ", "bateria_capacidad"
+            ),
+            "autonomia_electrica": self.pedir_float_validado(
+                "Autonomía eléctrica (km): ", "autonomia_electrica"
+            ),
+            "tiempo_carga": self.pedir_float_validado(
+                "Tiempo de carga (h): ", "tiempo_carga"
+            ),
         }
 
     def pd_motocarro(self):
         return {
-            'capacidad_pasajeros': self.pedir_int_validado("Capacidad pasajeros: ", "capacidad_pasajeros"),
-            'capacidad_carga': self.pedir_float_validado("Capacidad de carga (kg): ", "capacidad_carga"),
+            "capacidad_pasajeros": self.pedir_int_validado(
+                "Capacidad pasajeros: ", "capacidad_pasajeros"
+            ),
+            "capacidad_carga": self.pedir_float_validado(
+                "Capacidad de carga (kg): ", "capacidad_carga"
+            ),
         }
 
     def agregar_moto(self):
-        print("\n" + "="*60)
+        print("\n" + "=" * 60)
         print("  AGREGAR NUEVA MOTO")
-        print("="*60)
-        
-        
-                
+        print("=" * 60)
+
         print("\nTIPOS DE MOTO DISPONIBLES:")
         self.validator.mostrar_opciones("tipo")
-        
+
         tipos = {
-    '1': 'adventure',
-    '2': 'doble proposito',
-    '3': 'electric',
-    '4': 'motocarro',
-    '5': 'naked',
-    '6': 'scooter',
-    '7': 'sport',
-    '8': 'street',
-    '9': 'touring'
-     }
+            "1": "adventure",
+            "2": "doble proposito",
+            "3": "electric",
+            "4": "motocarro",
+            "5": "naked",
+            "6": "scooter",
+            "7": "sport",
+            "8": "street",
+            "9": "touring",
+        }
 
-
-        
         while True:
             tn = input("\nSelecciona tipo (1-9): ").strip()
             tps = tipos.get(tn)
 
             if tps:
-                break   
+                break
             else:
                 print("Tipo inválido. Debes seleccionar un número entre 1 y 9.")
 
         print(f"\n✅ Tipo seleccionado: {tps.upper()}")
-
 
         marca = self.pedir_texto_validado("Marca: ", "marca", obligatorio=True)
         modelo = self.pedir_texto("Modelo: ")
         año = self.pedir_int_validado("Año: ", "año", obligatorio=True)
         color = self.pedir_texto("Colores disponibles: ")
 
-        es_combustion = tps != 'electric'
+        es_combustion = tps != "electric"
 
         if es_combustion:
-            print("\n" + "-"*60)
+            print("\n" + "-" * 60)
             print("MOTOR Y RENDIMIENTO")
-            print("-"*60)
-            
-            cilindraje = self.pedir_int_validado("Cilindraje (cc): ", "cilindraje", obligatorio=True)
-            tiempos = self.pedir_texto_validado("Tiempos (2T/4T): ", "tiempos", obligatorio=True)
-            cilindros = self.pedir_texto_validado("Configuración de cilindros: ", "cilindros")
+            print("-" * 60)
+
+            cilindraje = self.pedir_int_validado(
+                "Cilindraje (cc): ", "cilindraje", obligatorio=True
+            )
+            tiempos = self.pedir_texto_validado(
+                "Tiempos (2T/4T): ", "tiempos", obligatorio=True
+            )
+            cilindros = self.pedir_texto_validado(
+                "Configuración de cilindros: ", "cilindros"
+            )
             arbol_levas = self.pedir_texto("Tipo de árbol de levas (SOHC, DOHC): ")
-            refrigeracion = self.pedir_texto_validado("Sistema de refrigeración: ", "refrigeracion")
+            refrigeracion = self.pedir_texto_validado(
+                "Sistema de refrigeración: ", "refrigeracion"
+            )
             arranque = self.pedir_texto_validado("Tipo de arranque: ", "arranque")
-            sliper_clutch = self.pedir_texto_validado("¿Sliper clutch? (si/no): ", "sliper_clutch")
+            sliper_clutch = self.pedir_texto_validado(
+                "¿Sliper clutch? (si/no): ", "sliper_clutch"
+            )
             inyeccion = self.pedir_texto_validado("Sistema de inyección: ", "inyeccion")
             potencia = self.pedir_potencia()
             torque = self.pedir_torque()
             consumo = self.pedir_float_validado("Consumo (km/l): ", "consumo")
-            capacidad_tanque = self.pedir_float_validado("Capacidad tanque (L): ", "capacidad_tanque")
+            capacidad_tanque = self.pedir_float_validado(
+                "Capacidad tanque (L): ", "capacidad_tanque"
+            )
         else:
             cilindraje = None
             tiempos = None
@@ -437,11 +480,11 @@ class DB:
             consumo = None
             capacidad_tanque = None
 
-        print("\n" + "-"*60)
+        print("\n" + "-" * 60)
         print("TRANSMISIÓN")
-        print("-"*60)
+        print("-" * 60)
 
-        if tps in ['scooter', 'electric']:
+        if tps in ["scooter", "electric"]:
             transmision = "automatica"
             caja_cambios = None
             if tps == "scooter":
@@ -450,43 +493,49 @@ class DB:
                 embrague = "Unidireccional"
         else:
             transmision = self.pedir_texto_validado("Transmisión: ", "transmision")
-            caja_cambios = self.pedir_texto_validado("Caja de cambios (ej: 6 vel): ", "caja")
+            caja_cambios = self.pedir_texto_validado(
+                "Caja de cambios (ej: 6 vel): ", "caja"
+            )
             embrague = self.pedir_texto_validado("Tipo de embrague: ", "embrague")
 
-        print("\n" + "-"*60)
+        print("\n" + "-" * 60)
         print("VELOCIDAD Y RENDIMIENTO")
-        print("-"*60)
+        print("-" * 60)
 
-        vel_crucero = self.pedir_float_validado("Velocidad crucero (km/h): ", "vel_crucero")
+        vel_crucero = self.pedir_float_validado(
+            "Velocidad crucero (km/h): ", "vel_crucero"
+        )
         top_speed = self.pedir_float_validado("Velocidad máxima (km/h): ", "top_speed")
 
-        print("\n" + "-"*60)
+        print("\n" + "-" * 60)
         print("ELECTRÓNICA Y SISTEMAS")
-        print("-"*60)
+        print("-" * 60)
 
         faros = self.pedir_texto_validado("Faros: ", "faros")
         direccionales = self.pedir_texto_validado("Direccionales: ", "faros")
         abs_sistema = self.pedir_texto_validado("ABS: ", "abs_sistema")
 
-        print("\n" + "-"*60)
+        print("\n" + "-" * 60)
         print("CHASIS Y SUSPENSIÓN")
-        print("-"*60)
+        print("-" * 60)
 
-        suspension_d = self.pedir_texto_validado("Suspensión delantera: ", "suspension_d")
+        suspension_d = self.pedir_texto_validado(
+            "Suspensión delantera: ", "suspension_d"
+        )
         suspension_t = self.pedir_texto_validado("Suspensión trasera: ", "suspension_t")
         freno_d = self.pedir_texto_validado("Freno delantero: ", "freno")
         freno_t = self.pedir_texto_validado("Freno trasero: ", "freno")
         neumaticos = self.pedir_texto_validado("Neumáticos: ", "neumaticos")
 
-        print("\n" + "-"*60)
+        print("\n" + "-" * 60)
         print("DIMENSIONES Y PESO")
-        print("-"*60)
+        print("-" * 60)
 
         dimensiones = self.pedir_texto("Dimensiones L x A x H (mm): ")
 
         if dimensiones:
             try:
-                partes = [x.strip() for x in dimensiones.lower().split('x')]
+                partes = [x.strip() for x in dimensiones.lower().split("x")]
                 largo = float(partes[0]) if len(partes) > 0 else None
                 ancho = float(partes[1]) if len(partes) > 1 else None
                 altura = float(partes[2]) if len(partes) > 2 else None
@@ -499,126 +548,124 @@ class DB:
             ancho = None
             altura = None
 
-        distancia_ejes = self.pedir_float_validado("Distancia entre ejes (mm): ", "distancia_ejes")
-        altura_asiento = self.pedir_float_validado("Altura asiento (mm): ", "altura_asiento")
+        distancia_ejes = self.pedir_float_validado(
+            "Distancia entre ejes (mm): ", "distancia_ejes"
+        )
+        altura_asiento = self.pedir_float_validado(
+            "Altura asiento (mm): ", "altura_asiento"
+        )
         peso = self.pedir_float_validado("Peso seco (kg): ", "peso")
 
-        print("\n" + "-"*60)
+        print("\n" + "-" * 60)
         print("PRECIO Y OBSERVACIONES")
-        print("-"*60)
+        print("-" * 60)
 
         precio = self.pedir_float_validado("Precio (COP): ", "precio")
         fallos_comunes = self.pedir_texto("Fallos comunes: ")
 
         moto = {
-            'id': f"{marca[:3].upper()}-{modelo.replace(' ', '')}",
-            'marca': marca,
-            'modelo': modelo,
-            'año': año,
-            'tipo': tps,
-            'color': color,
-
-            'cilindraje': cilindraje,
-            'tiempos': tiempos,
-            'cilindros': cilindros,
-            'arbol_levas': arbol_levas,
-            'refrigeracion': refrigeracion,
-            'arranque': arranque,
-            'embrague': embrague,
-            'sliper_clutch': sliper_clutch,
-            'inyeccion': inyeccion,
-            'potencia': potencia,
-            'torque': torque,
-
-            'transmision': transmision,
-            'caja_cambios': caja_cambios,
-
-            'consumo': consumo,
-            'capacidad_tanque': capacidad_tanque,
-
-            'vel_crucero': vel_crucero,
-            'top_speed': top_speed,
-
-            'faros': faros,
-            'direccionales': direccionales,
-            'abs_sistema': abs_sistema,
-
-            'suspension_d': suspension_d,
-            'suspension_t': suspension_t,
-            'freno_d': freno_d,
-            'freno_t': freno_t,
-            'neumaticos': neumaticos,
-
-            'largo': largo,
-            'ancho': ancho,
-            'altura': altura,
-            'distancia_ejes': distancia_ejes,
-            'altura_asiento': altura_asiento,
-            'peso': peso,
-
-            'precio': precio,
-            'fallos_comunes': fallos_comunes,
-
-            'aceleracion_0_100': None,
-            'modos_manejo': None,
-            'capacidad_maletas': None,
-            'parabrisas_ajustable': None,
-            'control_crucero': None,
-            'espacio_baul': None,
-            'suspension_largo_recorrido': None,
-            'proteccion_motor': None,
-            'tanque_grande': None,
-            'maletas_laterales': None,
-            'suspension_ajustable': None,
-            'bateria_capacidad': None,
-            'autonomia_electrica': None,
-            'tiempo_carga': None,
-            'capacidad_pasajeros': None,
-            'capacidad_carga': None
+            "id": f"{marca[:3].upper()}-{modelo.replace(' ', '')}",
+            "marca": marca,
+            "modelo": modelo,
+            "año": año,
+            "tipo": tps,
+            "color": color,
+            "cilindraje": cilindraje,
+            "tiempos": tiempos,
+            "cilindros": cilindros,
+            "arbol_levas": arbol_levas,
+            "refrigeracion": refrigeracion,
+            "arranque": arranque,
+            "embrague": embrague,
+            "sliper_clutch": sliper_clutch,
+            "inyeccion": inyeccion,
+            "potencia": potencia,
+            "torque": torque,
+            "transmision": transmision,
+            "caja_cambios": caja_cambios,
+            "consumo": consumo,
+            "capacidad_tanque": capacidad_tanque,
+            "vel_crucero": vel_crucero,
+            "top_speed": top_speed,
+            "faros": faros,
+            "direccionales": direccionales,
+            "abs_sistema": abs_sistema,
+            "suspension_d": suspension_d,
+            "suspension_t": suspension_t,
+            "freno_d": freno_d,
+            "freno_t": freno_t,
+            "neumaticos": neumaticos,
+            "largo": largo,
+            "ancho": ancho,
+            "altura": altura,
+            "distancia_ejes": distancia_ejes,
+            "altura_asiento": altura_asiento,
+            "peso": peso,
+            "precio": precio,
+            "fallos_comunes": fallos_comunes,
+            "aceleracion_0_100": None,
+            "modos_manejo": None,
+            "capacidad_maletas": None,
+            "parabrisas_ajustable": None,
+            "control_crucero": None,
+            "espacio_baul": None,
+            "suspension_largo_recorrido": None,
+            "proteccion_motor": None,
+            "tanque_grande": None,
+            "maletas_laterales": None,
+            "suspension_ajustable": None,
+            "bateria_capacidad": None,
+            "autonomia_electrica": None,
+            "tiempo_carga": None,
+            "capacidad_pasajeros": None,
+            "capacidad_carga": None,
         }
 
-        print("\n" + "-"*60)
+        print("\n" + "-" * 60)
         print("DATOS ESPECÍFICOS DEL TIPO")
-        print("-"*60)
+        print("-" * 60)
 
         datos_ex = {}
-        if tps == 'naked':
+        if tps == "naked":
             datos_ex = self.pd_naked()
-        elif tps == 'sport':
+        elif tps == "sport":
             datos_ex = self.pd_sport()
-        elif tps == 'touring':
+        elif tps == "touring":
             datos_ex = self.pd_touring()
-        elif tps == 'scooter':
+        elif tps == "scooter":
             datos_ex = self.pd_scooter()
-        elif tps == 'street':
+        elif tps == "street":
             datos_ex = self.pd_street()
-        elif tps == 'doble proposito':
+        elif tps == "doble proposito":
             datos_ex = self.pd_doble_pps()
-        elif tps == 'adventure':
+        elif tps == "adventure":
             datos_ex = self.pd_adventure()
-        elif tps == 'electric':
+        elif tps == "electric":
             datos_ex = self.pd_electric()
-        elif tps == 'motocarro':
+        elif tps == "motocarro":
             datos_ex = self.pd_motocarro()
 
         moto.update(datos_ex)
 
         self.agregar_moto_db(moto)
-        
-        print("\n" + "="*60)
+
+        print("\n" + "=" * 60)
         print(f"Moto '{marca} {modelo}' agregada exitosamente!")
         print(f"ID: {moto['id']}")
-        print("="*60 + "\n")
-        
-        return moto['id']
-   
+        print("=" * 60 + "\n")
+
+        return moto["id"]
+
     def obtener_modelos_por_marca(self, marca):
-        self.cursor.execute("""
+        self.cursor.execute(
+            """
             SELECT id, marca, modelo, tipo, año
             FROM moto
             WHERE marca LIKE ?
             ORDER BY modelo ASC
-        """, (f"%{marca}%",))
+        """,
+            (f"%{marca}%",),
+        )
         return [dict(row) for row in self.cursor.fetchall()]
 
     def obtener_detalles(self, moto_id):

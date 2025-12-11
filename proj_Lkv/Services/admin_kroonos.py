@@ -5,15 +5,16 @@ from data.db import DB
 from data.db_scores import DBScores
 from Core.kroono_score import KronoScore
 
+
 def admin_mode():
     init_db()
     init_scores_db()
     db = DB()
 
     while True:
-        print("\n" + "="*50)
+        print("\n" + "=" * 50)
         print(" ADMIN MODE ")
-        print("="*50)
+        print("=" * 50)
         print("1. Agregar moto")
         print("2. Editar campo de moto")
         print("3. Eliminar moto")
@@ -41,8 +42,7 @@ def admin_mode():
             motos = db.listar_motos()
             for m in motos:
                 print(f"- {m['id']} | {m['marca']} {m['modelo']} ({m['tipo']})")
-                
-            
+
         elif op == "0":
             print("Volviendo al menú principal...")
             db.cerrar()
@@ -50,4 +50,3 @@ def admin_mode():
 
         else:
             print("Opción inválida")
-
